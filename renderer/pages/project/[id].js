@@ -12,7 +12,6 @@ import {
   Form,
   FormGroup,
   Label,
-
 } from '@bootstrap-styled/v4';
 import Logo from '../../components/Logo';
 import Header from '../../components/Header';
@@ -36,20 +35,31 @@ export default function Repo() {
   // state = { new: Array(), modified: Array(), deleted: Array() }
   const { state } = useProjectState(project ? project.path : null);
 
-  const { value: commitMessage, bind: bindCommitMessage, reset: resetCommitMessage } = useInput('');
+  const {
+    value: commitMessage,
+    bind: bindCommitMessage,
+    reset: resetCommitMessage,
+  } = useInput('');
 
-  const handleSubmit = useCallback(async (event) => {
-    event.preventDefault();
+  if (typeof window !== 'undefined' && project) {
+    ipc.callMain('get-project-history', project.path).then(console.log);
+  }
 
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.stopPropagation();
-    }
-    const projectPath = project.path;
-    await ipc.callMain('commit-project', { projectPath, commitMessage });
+  const handleSubmit = useCallback(
+    async event => {
+      event.preventDefault();
 
-    resetCommitMessage();
-  }, [project, commitMessage]);
+      const form = event.currentTarget;
+      if (form.checkValidity() === false) {
+        event.stopPropagation();
+      }
+      const projectPath = project.path;
+      await ipc.callMain('commit-project', { projectPath, commitMessage });
+
+      resetCommitMessage();
+    },
+    [project, commitMessage]
+  );
 
   return (
     <Page>
@@ -58,7 +68,6 @@ export default function Repo() {
       </Head>
       <Header user={user} />
       <div>
-
         {project && (
           <Row>
             <Panel md={3}>
@@ -96,31 +105,44 @@ export default function Repo() {
 
               <Form onSubmit={handleSubmit} className="m-2">
                 <FormGroup>
-                  <Input required type="text" placeholder="Enter message" {...bindCommitMessage} />
+                  <Input
+                    required
+                    type="text"
+                    placeholder="Enter message"
+                    {...bindCommitMessage}
+                  />
                 </FormGroup>
-                <Button disabled={!((state.new && state.new.length > 0) || (state.modified && state.modified.length > 0))} className="mr-2" type="submit">
+                <Button
+                  disabled={
+                    !(
+                      (state.new && state.new.length > 0) ||
+                      (state.modified && state.modified.length > 0)
+                    )
+                  }
+                  className="mr-2"
+                  type="submit"
+                >
                   Sign
                 </Button>
               </Form>
-
             </Panel>
             <Col className="bg-info p-3">
               <Row>
                 <Col md={12}>
-                  <H5>
-                    {project.name}
-                  </H5>
+                  <H5>{project.name}</H5>
                 </Col>
               </Row>
-
-
             </Col>
             <Panel md={3}>
               <PanelHeader title="Share" fontWeight="500" />
               <Form className="m-2">
                 <FormGroup>
                   <Input required type="email" placeholder="Enter emails" />
-                  <Textarea required placeholder="Write a message" className="mt-2"/>
+                  <Textarea
+                    required
+                    placeholder="Write a message"
+                    className="mt-2"
+                  />
                 </FormGroup>
                 <Button className="mr-2" type="submit">
                   Send
