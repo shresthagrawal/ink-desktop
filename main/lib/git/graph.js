@@ -10,6 +10,8 @@ const commitToObject = commit => ({
   message: commit.message(),
 });
 
+// also very interesting:
+// <https://github.com/nodegit/nodegit/issues/1174>
 export async function getGraph(repo) {
   const commits = [];
   const masterCommit = await repo.getMasterCommit();
