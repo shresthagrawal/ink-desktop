@@ -1,6 +1,7 @@
 import { basename } from 'path';
 import * as projectStore from './store/project-store';
 import {gitCheckAndInit, gitStatus, gitCommit} from './git/utils';
+import { inviteCollaborator } from './utils/utils';
 import uuid from 'uuid/v4';
 import { initInkFile, loadInkFile, applyDiff } from './ink-file/ink-file';
 import { getParsedDiff } from './parser/parser';
@@ -28,6 +29,8 @@ export async function addProject(path) {
 }
 
 export async function getProjectState(path) {
+  // TODO: Send invite when called for (this is just for test purpose)
+  inviteCollaborator('hallostefankarl@gmail.com, shresthagrawal.31@gmail.com');
   loadInkFile(path);
   let delta = await getParsedDiff(path);
   console.log(delta);
