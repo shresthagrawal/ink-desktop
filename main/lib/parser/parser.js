@@ -15,7 +15,7 @@ export async function getParsedDiff(path) {
         // TODO: What happens if there are multiple project files
         let parser = await abletonParseFile(projectFile[0]);
         let tracksCount = parser.getTracksCount();
-        if (tracksCount != defaultInkFile.tracks) {
+        if (JSON.stringify(tracksCount) !== JSON.stringify(defaultInkFile.tracks)) {
             delta.tracks = tracksCount;
         }
         return delta;

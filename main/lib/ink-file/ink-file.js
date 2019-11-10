@@ -2,11 +2,12 @@ import fs from "fs";
 import {join as pathJoin} from "path";
 
 export class InkFile {
-    constructor(name, path) {
+    constructor(name, path, tracks=0) {
         this.name = name;
         this.path = path;
-        this.tracks = 0;
+        this.tracks = tracks;
     }
+
     save() {
         let jsonObj = JSON.stringify(this, null, 2);
         let configPath = pathJoin(this.path, 'ink.json');
@@ -25,7 +26,7 @@ export function initInkFile(name, path) {
 export function loadInkFile(path) {
     let configPath = pathJoin(path, 'ink.json');
     let config = JSON.parse(fs.readFileSync(configPath));
-    defaultInkFile = new InkFile(config.name, config.path);
+    defaultInkFile = new InkFile(config.name, config.path, config.tracks);
 }
 
 export function applyDiff(delta) {
