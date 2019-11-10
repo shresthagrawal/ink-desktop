@@ -17,7 +17,7 @@
     "@bootstrap-styled/v4": "^3.1.1",
     "@ibm/plex": "^2.0.0",
     "@zeit/next-css": "^1.0.1",
-    "ableton-parser": "file:../ableton-parser",
+    "ableton-parser": "1.0.0",
     "babel-plugin-styled-components": "^1.10.6",
     "bootstrap-styled": "^2.5.1",
     "electron-better-ipc": "^0.5.0",
