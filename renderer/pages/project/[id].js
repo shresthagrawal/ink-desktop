@@ -71,7 +71,7 @@ export default function Repo() {
         {project && (
           <Row>
             <Panel md={3}>
-              <PanelHeader title="Local changes" fontWeight="bold" />
+              <PanelHeader title="Local Changes" fontWeight="bold" />
               {/*state.new && state.new.length > 0 && (
                 <React.Fragment>
                   <Row>
@@ -102,6 +102,9 @@ export default function Repo() {
                   ))}
                 </React.Fragment>
               )*/}
+
+              {/* FIXME: JUST A MOCK */}
+              <p>No changes to sign.</p>
 
               <Form onSubmit={handleSubmit} className="m-2">
                 <FormGroup>
