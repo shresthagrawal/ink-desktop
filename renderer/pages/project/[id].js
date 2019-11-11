@@ -26,7 +26,7 @@ import useProjectState from '../../effects/useProjectState';
 import useInput from '../../effects/useInput';
 import useUser from '../../effects/useUser';
 import CommitGraph from '../../components/CommitGraph';
-import { complementarySecondary } from '../../layout/colors';
+import { highlightSecondary } from '../../layout/colors';
 
 const FlexContainer = styled(Container)`
   display: flex;
@@ -59,7 +59,7 @@ const MoreInfo = styled.em`
   font-style: normal;
   font-size: 16px;
   line-height: 100%;
-  color: ${complementarySecondary};
+  color: ${highlightSecondary};
 `;
 
 const TrackLine = styled(Col).attrs({
@@ -74,7 +74,7 @@ const mockCommits = [
     author: {
       name: 'Emma',
     },
-    message: 'Create project, add first drum stems',
+    message: 'Create project',
     tags: ['drums'],
   },
   {
@@ -82,7 +82,7 @@ const mockCommits = [
     author: {
       name: 'Tim',
     },
-    message: 'Tweak some sounds, add voice samples',
+    message: 'Tweak some sounds',
     tags: ['vocals', 'fx'],
   },
 ];
