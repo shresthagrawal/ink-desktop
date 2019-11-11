@@ -98,6 +98,22 @@ const mockCommits = [
     },
     message: 'Create project',
     tags: ['genesis'],
+    subBranch: [
+      {
+        hash: 'foo1',
+        author: {
+          name: 'Emma',
+        },
+        message: 'Add bass solo',
+      },
+      {
+        hash: 'foo2',
+        author: {
+          name: 'Emma',
+        },
+        message: 'Adjust compressor settings',
+      },
+    ],
   },
   {
     hash: 'bar',

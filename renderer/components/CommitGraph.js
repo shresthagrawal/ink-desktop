@@ -1,6 +1,10 @@
 import React from 'react';
-import styled from 'styled-components';
-import { buttonInfo, complementaryPrimary } from '../layout/colors';
+import styled, { css } from 'styled-components';
+import {
+  buttonInfo,
+  complementaryPrimary,
+  highlightSecondary,
+} from '../layout/colors';
 
 const Container = styled.ul`
   display: flex;
@@ -29,11 +33,20 @@ const Line = styled.div`
   background: ${complementaryPrimary};
 `;
 
+const AuthorImage = styled.div`
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+  border-radius: 30px;
+  background: #ddd;
+`;
+
 const Item = styled.li`
   position: relative;
   display: flex;
-  flex-flow: row;
-  margin: 0 0 16px;
+  flex-flow: column;
+  margin: 0 0 0 ${props => (props.level ? props.level * 30 : 0)}px;
   padding: 0;
 
   &:first-child {
@@ -45,15 +58,28 @@ const Item = styled.li`
       display: none;
     }
   }
+
+  ${AuthorImage} {
+    margin-left: ${props => (props.level && props.level === 1 ? 10 : 40)}px;
+  }
+
+  ${props =>
+    props.color &&
+    css`
+      ${Dot} {
+        background: ${props.color};
+      }
+
+      ${Line} {
+        background: ${props.color};
+      }
+    `}
 `;
 
-const AuthorImage = styled.div`
-  display: inline-block;
-  width: 30px;
-  height: 30px;
-  margin-right: 10px;
-  border-radius: 30px;
-  background: #ddd;
+const Commit = styled.div`
+  display: flex;
+  flex-flow: row;
+  margin-bottom: 16px;
 `;
 
 const Name = styled.p`
@@ -75,12 +101,24 @@ const Message = styled.p`
 export default function CommitGraph({ graph }) {
   return (
     <Container>
-      {graph.map(({ hash, author, message }) => (
+      {graph.map(({ hash, author, message, subBranch = [] }) => (
         <Item key={`commit-${hash}`}>
-          <Dot />
-          <Line />
-          <AuthorImage />
-          <Name>{author.name}:</Name> <Message>{message}</Message>
+          <Commit>
+            <Dot />
+            <Line />
+            <AuthorImage />
+            <Name>{author.name}:</Name> <Message>{message}</Message>
+          </Commit>
+          {subBranch.map(({ hash, author, message }) => (
+            <Item key={`commit-${hash}`} level={1} color={highlightSecondary}>
+              <Commit>
+                <Dot />
+                <Line />
+                <AuthorImage />
+                <Name>{author.name}:</Name> <Message>message</Message>
+              </Commit>
+            </Item>
+          ))}
         </Item>
       ))}
     </Container>
