@@ -1,8 +1,9 @@
 import React, { useCallback } from 'react';
 import { ipcRenderer as ipc } from 'electron-better-ipc';
+import styled from 'styled-components';
+import { inviteCollaborator } from '../../../main/lib/utils/mail';
 import Head from 'next/head';
 import Link from 'next/link';
-import { inviteCollaborator } from '../../../main/lib/utils/mail';
 import { useRouter } from 'next/router';
 import {
   Col,
@@ -25,6 +26,17 @@ import PanelHeader from '../../components/PanelHeader';
 import useProjectState from '../../effects/useProjectState';
 import useInput from '../../effects/useInput';
 import useUser from '../../effects/useUser';
+
+const Container = styled.div`
+  display: flex;
+  flex-flow: column;
+  flex-grow: 1;
+  min-height: 100%;
+`;
+
+const TallRow = styled(Row)`
+  flex-grow: 1;
+`;
 
 export default function Repo() {
   const { query } = useRouter();
@@ -76,9 +88,9 @@ export default function Repo() {
         <title>ununu • Ink</title>
       </Head>
       <Header user={user} />
-      <div>
+      <Container>
         {project && (
-          <Row>
+          <TallRow>
             <Panel md={3}>
               <PanelHeader title="Local Changes" fontWeight="bold" />
               {/*state.new && state.new.length > 0 && (
@@ -161,9 +173,9 @@ export default function Repo() {
                 </Button>
               </Form>
             </Panel>
-          </Row>
+          </TallRow>
         )}
-      </div>
+      </Container>
     </Page>
   );
 }
