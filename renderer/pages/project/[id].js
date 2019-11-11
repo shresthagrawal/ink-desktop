@@ -1,13 +1,13 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { ipcRenderer as ipc } from 'electron-better-ipc';
 import styled from 'styled-components';
-import { inviteCollaborator } from '../../../main/lib/utils/mail';
+import slugify from 'slugify';
+import { inviteCollaborators } from '../../../main/lib/utils/mail';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import {
   Col,
   H5,
-  H6,
   Row,
   Button,
   Form,
@@ -26,8 +26,15 @@ import useProjectState from '../../effects/useProjectState';
 import useInput from '../../effects/useInput';
 import useUser from '../../effects/useUser';
 import CommitGraph from '../../components/CommitGraph';
-import { buttonPrimary, highlightSecondary } from '../../layout/colors';
+import {
+  buttonPrimary,
+  complementaryPrimary,
+  highlightSecondary,
+} from '../../layout/colors';
 import HistoryIcon from '../../components/HistoryIcon';
+import useTimedState from '../../effects/useTimedState';
+import { animated } from 'react-spring';
+import useFade from '../../effects/useFade';
 
 const FlexContainer = styled(Container)`
   display: flex;
@@ -73,6 +80,16 @@ const GraphTitle = styled(H5)`
   align-items: center;
 `;
 
+const SendSuccess = styled(animated.em)`
+  display: inline-block;
+  margin: 3px;
+
+  font-style: normal;
+  font-weight: bold;
+  font-size: 18px;
+  color: ${complementaryPrimary};
+`;
+
 const mockCommits = [
   {
     hash: 'foo',
@@ -80,7 +97,7 @@ const mockCommits = [
       name: 'Emma',
     },
     message: 'Create project',
-    tags: ['drums'],
+    tags: ['genesis'],
   },
   {
     hash: 'bar',
@@ -97,6 +114,8 @@ export default function Repo() {
   const { query } = useRouter();
   const { projects } = useProjects();
   const { user } = useUser();
+  const [mailSent, setMailSent] = useTimedState(false, 5000);
+  const fadeTransitions = useFade(mailSent);
   const project = projects.find(project => project.id === query.id);
 
   // state is of the following structure:
@@ -129,10 +148,13 @@ export default function Repo() {
 
   const handleInvite = useCallback(async event => {
     event.preventDefault();
-    await inviteCollaborator([
-      'hallostefankarl@gmail.com',
-      'shresthagrawal.31@gmail.com',
-    ]);
+    await inviteCollaborators(
+      ['hallostefankarl@gmail.com', 'shresthagrawal.31@gmail.com'],
+      'Hey Stefan, please have a look at my track!',
+      project.name,
+      slugify(project.name)
+    );
+    setMailSent(true);
   });
 
   return (
@@ -248,6 +270,14 @@ export default function Repo() {
                 <Button className="mr-2" type="submit">
                   Send
                 </Button>
+                {fadeTransitions.map(
+                  ({ item, key, props }) =>
+                    item && (
+                      <SendSuccess key={key} style={props}>
+                        Sent!
+                      </SendSuccess>
+                    )
+                )}
               </Form>
             </Panel>
           </TallRow>

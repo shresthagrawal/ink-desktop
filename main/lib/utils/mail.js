@@ -1,8 +1,17 @@
 import { createTransport } from 'nodemailer';
 import * as userStore from '../store/user-store';
 
-export async function inviteCollaborator(collaborators, message, project, url) {
+export async function inviteCollaborators(
+  collaborators,
+  message,
+  projectName,
+  projectHash
+) {
   userStore.init();
+  collaborators = !Array.isArray(collaborators)
+    ? [collaborators]
+    : collaborators;
+
   const transport = createTransport({
     pool: true,
     host: 'smtp.sendgrid.net',
@@ -15,26 +24,24 @@ export async function inviteCollaborator(collaborators, message, project, url) {
         'redacted',
     },
   });
+
   // TODO: Correct the template after pitch
-  let user = userStore.get();
-  let body = `${ user.email } has requested your input for a new track he created on Ink.<br>` + 
-             `Start collaborating here: ${ url }<br><br>` +
-             `${ message.replace('\n', '<br>') }<br><br>` +
-             `Cheers,<br>` +
-             `${ user.email }.`
-             
+  const user = userStore.get();
+  const body = `${user.email} has requested your input for a new track they created on Ink.
+Start collaborating here: https://ununu.io/collaborate/${projectHash}
+
+Their message:
+${message}
+
+Cheers,
+ununu.`.replace(/\n/g, '<br>');
+
   const mailOptions = {
     from: '"Ink Collaborator" <matters@ununu.io>',
     to: collaborators.join(','),
-    subject: "You've been invited to collaborate on " + project,
+    subject: `You've been invited to collaborate on ${projectName}`,
     html: body,
   };
 
-  transport.sendMail(mailOptions, function(error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log('Invitation sent: ' + info.response);
-    }
-  });
+  return await transport.sendMail(mailOptions);
 }
