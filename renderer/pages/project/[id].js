@@ -158,10 +158,10 @@ export default function Repo() {
               <Form className="m-2" onSubmit={handleInvite}>
                 <ShareImage />
                 <FormGroup>
-                  <Input required type="email" placeholder="Enter emails" />
+                  <Input required type="email" placeholder="Recipient" />
                   <Textarea
                     required
-                    placeholder="Write a message"
+                    placeholder="Message"
                     className="mt-2"
                   />
                 </FormGroup>
