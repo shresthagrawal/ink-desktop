@@ -26,15 +26,15 @@ export async function addProject(path) {
 }
 
 export async function getProjectState(projectPath) {
-  loadInkFile(path);
+  loadInkFile(projectPath);
   const delta = await getParsedDiff(projectPath);
-  console.log(delta);
+  console.log('als delta', delta);
 
   const repo = await Git.Repository.open(`${projectPath}/.git`);
   // TODO: Use the state of the ink file
-  const state = await gitStatus(repo);
+  const status = await gitStatus(repo);
   const graph = await getGraph(repo);
-  return { state, graph };
+  return { status, graph };
 }
 
 export async function commitProject(path, commitMessage, delta) {

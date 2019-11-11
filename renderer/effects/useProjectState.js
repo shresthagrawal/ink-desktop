@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { ipcRenderer as ipc } from 'electron-better-ipc';
 
 export default function useProjectState(projectPath) {
-  const [state, setState] = useState({});
+  const [state, setState] = useState({
+    status: {},
+    graph: [],
+  });
 
   useEffect(() => {
     async function getState() {
-      const status = await ipc.callMain('get-project-state', projectPath);
-      setState(status);
+      setState(await ipc.callMain('get-project-state', projectPath));
     }
 
     if (projectPath) {
@@ -15,5 +17,5 @@ export default function useProjectState(projectPath) {
     }
   }, [projectPath]);
 
-  return { state };
+  return state;
 }

@@ -38,6 +38,10 @@ const TallRow = styled(Row)`
   margin: 0 !important;
 `;
 
+const mockCommits = [
+  {}
+]
+
 export default function Repo() {
   const { query } = useRouter();
   const { projects } = useProjects();
@@ -46,7 +50,7 @@ export default function Repo() {
 
   // state is of the following structure:
   // state = { new: Array(), modified: Array(), deleted: Array() }
-  const { state, graph } = useProjectState(project ? project.path : null);
+  const { status, graph } = useProjectState(project ? project.path : null);
 
   const {
     value: commitMessage,
@@ -89,13 +93,13 @@ export default function Repo() {
           <TallRow>
             <Panel md={3}>
               <PanelHeader title="Local Changes" fontWeight="bold" />
-              {/*state.new && state.new.length > 0 && (
+              {/*status.new && status.new.length > 0 && (
                 <React.Fragment>
                   <Row>
                     <H6>New Files</H6>
                   </Row>
 
-                  {state.new.map((filePath, index) => (
+                  {status.new.map((filePath, index) => (
                     <Row key={`new-${index}`}>
                       <Col md={12}>
                         <code>{filePath}</code>
@@ -104,13 +108,13 @@ export default function Repo() {
                   ))}
                 </React.Fragment>
               )*/}
-              {/*state.modified && state.modified.length > 0 && (
+              {/*status.modified && status.modified.length > 0 && (
                 <React.Fragment>
                   <Row>
                     <H6>Modified Files</H6>
                   </Row>
 
-                  {state.modified.map((filePath, index) => (
+                  {status.modified.map((filePath, index) => (
                     <Row key={`new-${index}`}>
                       <Col md={12}>
                         <code>{filePath}</code>
@@ -135,8 +139,8 @@ export default function Repo() {
                 <Button
                   disabled={
                     !(
-                      (state.new && state.new.length > 0) ||
-                      (state.modified && state.modified.length > 0)
+                      (status.new && status.new.length > 0) ||
+                      (status.modified && status.modified.length > 0)
                     )
                   }
                   className="mr-2"
