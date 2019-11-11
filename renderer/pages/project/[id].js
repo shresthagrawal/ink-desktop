@@ -70,6 +70,7 @@ const TrackLine = styled(Col).attrs({
 
 const mockCommits = [
   {
+    hash: 'foo',
     author: {
       name: 'Emma',
     },
@@ -77,6 +78,7 @@ const mockCommits = [
     tags: ['drums'],
   },
   {
+    hash: 'bar',
     author: {
       name: 'Tim',
     },
