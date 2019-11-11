@@ -22,8 +22,8 @@ async function main() {
   const mainWindow = createWindow('main', {
     width: 1000,
     height: 600,
-    minWidth: 400,
-    minHeight: 300,
+    minWidth: 1000,
+    minHeight: 600,
   });
   mainWindow.loadURL(homeUrl);
   if (!isProd) {

@@ -5,12 +5,18 @@ export default function useProjectState(projectPath) {
   const [state, setState] = useState({
     status: {},
     graph: [],
+    delta: {},
   });
 
   useEffect(() => {
-    async function getState() {
-      setState(await ipc.callMain('get-project-state', projectPath));
-    }
+    const getState = async () => {
+      try {
+        const res = await ipc.callMain('get-project-state', projectPath);
+        setState(res);
+      } catch (err) {
+        console.error('Bad Error:', err);
+      }
+    };
 
     if (projectPath) {
       getState();

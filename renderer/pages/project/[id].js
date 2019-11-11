@@ -24,6 +24,7 @@ import useProjects from '../../effects/useProjects';
 import useProjectState from '../../effects/useProjectState';
 import useInput from '../../effects/useInput';
 import useUser from '../../effects/useUser';
+import CommitGraph from '../../components/CommitGraph';
 
 const FlexContainer = styled(Container)`
   display: flex;
@@ -38,9 +39,7 @@ const TallRow = styled(Row)`
   margin: 0 !important;
 `;
 
-const mockCommits = [
-  {}
-]
+const mockCommits = [{}];
 
 export default function Repo() {
   const { query } = useRouter();
@@ -50,8 +49,11 @@ export default function Repo() {
 
   // state is of the following structure:
   // state = { new: Array(), modified: Array(), deleted: Array() }
-  const { status, graph } = useProjectState(project ? project.path : null);
+  const { status, graph, delta } = useProjectState(
+    project ? project.path : null
+  );
 
+  console.log(delta && JSON.stringify(delta, null, 2));
   const {
     value: commitMessage,
     bind: bindCommitMessage,
@@ -93,6 +95,9 @@ export default function Repo() {
           <TallRow>
             <Panel md={3}>
               <PanelHeader title="Local Changes" fontWeight="bold" />
+              {delta.tracks &&
+                delta.tracks.map(trackName => <p>{trackName}</p>)}
+
               {/*status.new && status.new.length > 0 && (
                 <React.Fragment>
                   <Row>
@@ -156,6 +161,11 @@ export default function Repo() {
                   <H5>{project.name}</H5>
                 </Col>
               </Row>
+              <Row>
+                <Col md={12}>
+                  <CommitGraph graph={graph} />
+                </Col>
+              </Row>
             </Col>
             <Panel md={3}>
               <PanelHeader title="Share" fontWeight="500" />
@@ -163,11 +173,7 @@ export default function Repo() {
                 <ShareImage />
                 <FormGroup>
                   <Input required type="email" placeholder="Recipient" />
-                  <Textarea
-                    required
-                    placeholder="Message"
-                    className="mt-2"
-                  />
+                  <Textarea required placeholder="Message" className="mt-2" />
                 </FormGroup>
                 <Button className="mr-2" type="submit">
                   Send
