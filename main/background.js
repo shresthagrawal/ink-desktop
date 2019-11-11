@@ -48,15 +48,17 @@ ipc.answerRenderer('fetch-projects', () => projectStore.list());
 
 ipc.answerRenderer('reset-projects', () => projectStore.reset());
 
-ipc.answerRenderer('add-project', async projectPath => {
-  return await addProject(projectPath);
-});
+ipc.answerRenderer(
+  'add-project',
+  async projectPath => await addProject(projectPath)
+);
 
-ipc.answerRenderer('get-project-state', async projectPath => {
-  return await getProjectState(projectPath);
-});
+ipc.answerRenderer(
+  'get-project-state',
+  async projectPath => await getProjectState(projectPath)
+);
 
 ipc.answerRenderer('commit-project', async ({ projectPath, commitMessage }) => {
   const user = userStore.get();
-  return await commitProject(projectPath, commitMessage, user);
+  return await commitProject(projectPath, commitMessage, user.email);
 });

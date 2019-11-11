@@ -41,7 +41,7 @@ export async function getProjectState(projectPath) {
   }
 }
 
-export async function commitProject(path, commitMessage, delta) {
-  applyDiff(delta);
-  return await gitCommit(path, commitMessage);
+export async function commitProject(projectPath, commitMessage, userEmail) {
+  applyDiff(await getParsedDiff(projectPath));
+  return await gitCommit(projectPath, commitMessage, userEmail);
 }

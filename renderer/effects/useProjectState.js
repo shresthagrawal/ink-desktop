@@ -8,16 +8,16 @@ export default function useProjectState(projectPath, interval = null) {
     delta: {},
   });
 
-  useEffect(() => {
-    const getState = async () => {
-      try {
-        const res = await ipc.callMain('get-project-state', projectPath);
-        setState(res);
-      } catch (err) {
-        console.error('Bad Error:', err);
-      }
-    };
+  const getState = async () => {
+    try {
+      const res = await ipc.callMain('get-project-state', projectPath);
+      setState(res);
+    } catch (err) {
+      console.error('Bad Error:', err);
+    }
+  };
 
+  useEffect(() => {
     if (!projectPath) {
       return;
     }
@@ -30,5 +30,8 @@ export default function useProjectState(projectPath, interval = null) {
     }
   }, [projectPath]);
 
-  return state;
+  return {
+    ...state,
+    reloadProjectState: getState,
+  };
 }

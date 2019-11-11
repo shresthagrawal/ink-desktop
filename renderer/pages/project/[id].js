@@ -114,13 +114,15 @@ export default function Repo() {
   const { query } = useRouter();
   const { projects } = useProjects();
   const { user } = useUser();
+  const [commitSigned, setCommitSigned] = useTimedState(false, 5000);
   const [mailSent, setMailSent] = useTimedState(false, 5000);
-  const fadeTransitions = useFade(mailSent);
+  const mailSentTransitions = useFade(mailSent);
+  const commitSignedTransitions = useFade(commitSigned);
   const project = projects.find(project => project.id === query.id);
 
   // state is of the following structure:
   // state = { new: Array(), modified: Array(), deleted: Array() }
-  const { status, graph, delta } = useProjectState(
+  const { status, graph, delta, reloadProjectState } = useProjectState(
     project ? project.path : null
   );
 
@@ -142,6 +144,8 @@ export default function Repo() {
       await ipc.callMain('commit-project', { projectPath, commitMessage });
 
       resetCommitMessage();
+      setCommitSigned(true);
+      await reloadProjectState();
     },
     [project, commitMessage]
   );
@@ -168,8 +172,8 @@ export default function Repo() {
           <TallRow>
             <Panel md={3}>
               <PanelHeader title="Changed Tracks" fontWeight="bold" />
-              {delta.tracks && delta.tracks.length > 0 && (
-                <React.Fragment>
+              {delta.tracks && (
+                <>
                   {delta.tracks.slice(1, 5).map((trackName, index) => (
                     <TrackLine key={`new-${index}`}>
                       <TrackIcon>{trackEmoji[index]}</TrackIcon>
@@ -184,7 +188,13 @@ export default function Repo() {
                       </MoreInfo>
                     </TrackLine>
                   )}
-                </React.Fragment>
+
+                  {delta.tracks.length === 0 && (
+                    <TrackLine offsetTop>
+                      <MoreInfo>No new tracks.</MoreInfo>
+                    </TrackLine>
+                  )}
+                </>
               )}
 
               {/*status.new && status.new.length > 0 && (
@@ -228,17 +238,20 @@ export default function Repo() {
                   />
                 </FormGroup>
                 <Button
-                  disabled={
-                    !(
-                      (status.new && status.new.length > 0) ||
-                      (status.modified && status.modified.length > 0)
-                    )
-                  }
+                  disabled={!(delta.tracks && delta.tracks.length > 0)}
                   className="mr-2"
                   type="submit"
                 >
                   Sign
                 </Button>
+                {commitSignedTransitions.map(
+                  ({ item, key, props }) =>
+                    item && (
+                      <SendSuccess key={key} style={props}>
+                        Signed!
+                      </SendSuccess>
+                    )
+                )}
               </Form>
             </Panel>
             <Col
@@ -270,7 +283,7 @@ export default function Repo() {
                 <Button className="mr-2" type="submit">
                   Send
                 </Button>
-                {fadeTransitions.map(
+                {mailSentTransitions.map(
                   ({ item, key, props }) =>
                     item && (
                       <SendSuccess key={key} style={props}>

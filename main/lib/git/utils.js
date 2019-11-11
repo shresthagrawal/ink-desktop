@@ -35,7 +35,7 @@ export async function gitStatus(repo) {
   return state;
 }
 
-export async function gitCommit(projectPath, commitMessage, user) {
+export async function gitCommit(projectPath, commitMessage, userEmail) {
   try {
     const repo = await Git.Repository.open(`${projectPath}/.git`);
     const index = await repo.refreshIndex();
@@ -55,7 +55,7 @@ export async function gitCommit(projectPath, commitMessage, user) {
 
     // Using logged in user email as signature's name and email
     // Can be changed later on when the collaboration platform is in place
-    const signature = await Git.Signature.now(user.email, user.email);
+    const signature = await Git.Signature.now(userEmail, userEmail);
 
     await repo.createCommit(
       'HEAD',
