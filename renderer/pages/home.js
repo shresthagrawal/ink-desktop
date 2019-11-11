@@ -12,7 +12,7 @@ import {
   Jumbotron,
   Form,
   FormGroup,
-  Label,
+  Label, Container,
 } from '@bootstrap-styled/v4';
 import { complementarySecondary } from '../layout/colors';
 import useProjects from '../effects/useProjects';
@@ -23,6 +23,19 @@ import Panel from '../components/Panel';
 import Input from '../components/Input';
 import useInput from '../effects/useInput';
 import fetch from 'isomorphic-unfetch';
+
+const FlexContainer = styled(Container)`
+  display: flex;
+  flex-flow: column;
+  flex-grow: 1;
+  min-height: 100%;
+  padding: 0;
+`;
+
+const TallRow = styled(Row)`
+  flex-grow: 1;
+  margin: 0 !important;
+`;
 
 const Message = styled.p`
   color: ${complementarySecondary};
@@ -84,10 +97,10 @@ const Home = () => {
         <title>ununu • Ink</title>
       </Head>
       <Header user={user} />
-      <div>
+      <FlexContainer fluid={true}>
         {user && user.email ? (
-          <div>
-            <Row>
+          <React.Fragment>
+            <TallRow>
               <Panel md={2} />
               <Col className="bg-info p-3">
                 <Row>
@@ -135,8 +148,8 @@ const Home = () => {
               </Col>
 
               <Panel md={3}></Panel>
-            </Row>
-          </div>
+            </TallRow>
+          </React.Fragment>
         ) : (
           <Jumbotron className="py-3">
             <Form onSubmit={handleSubmit}>
@@ -164,7 +177,7 @@ const Home = () => {
             </Form>
           </Jumbotron>
         )}
-      </div>
+      </FlexContainer>
     </Page>
   );
 };

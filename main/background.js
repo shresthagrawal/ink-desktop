@@ -5,8 +5,6 @@ import { createWindow, exitOnChange } from './helpers';
 import { getProjectState, commitProject, addProject } from './lib/project';
 import * as projectStore from './lib/store/project-store';
 import * as userStore from './lib/store/user-store';
-import { getGraph } from './lib/git/graph';
-import Git from 'nodegit';
 
 const isProd = process.env.NODE_ENV === 'production';
 const homeUrl = isProd ? 'app://./home.html' : 'http://localhost:8888/home';
@@ -24,6 +22,8 @@ async function main() {
   const mainWindow = createWindow('main', {
     width: 1000,
     height: 600,
+    minWidth: 400,
+    minHeight: 300,
   });
   mainWindow.loadURL(homeUrl);
   if (!isProd) {
@@ -59,9 +59,4 @@ ipc.answerRenderer('get-project-state', async projectPath => {
 ipc.answerRenderer('commit-project', async ({ projectPath, commitMessage }) => {
   const user = userStore.get();
   return await commitProject(projectPath, commitMessage, user);
-});
-
-ipc.answerRenderer('get-project-history', async projectPath => {
-  const repo = await Git.Repository.open(`${projectPath}/.git`);
-  return await getGraph(repo);
 });

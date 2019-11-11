@@ -14,13 +14,13 @@ import {
   Container,
 } from '@bootstrap-styled/v4';
 import Header from '../../components/Header';
-import useProjects from '../../effects/useProjects';
 import Page from '../../components/Page';
 import Input from '../../components/Input';
 import Textarea from '../../components/Textarea';
 import Panel from '../../components/Panel';
 import PanelHeader from '../../components/PanelHeader';
 import ShareImage from '../../components/ShareImage';
+import useProjects from '../../effects/useProjects';
 import useProjectState from '../../effects/useProjectState';
 import useInput from '../../effects/useInput';
 import useUser from '../../effects/useUser';
@@ -46,7 +46,7 @@ export default function Repo() {
 
   // state is of the following structure:
   // state = { new: Array(), modified: Array(), deleted: Array() }
-  const { state } = useProjectState(project ? project.path : null);
+  const { state, graph } = useProjectState(project ? project.path : null);
 
   const {
     value: commitMessage,
@@ -54,11 +54,7 @@ export default function Repo() {
     reset: resetCommitMessage,
   } = useInput('');
 
-  if (typeof window !== 'undefined' && project) {
-    ipc.callMain('get-project-history', project.path).then(console.log);
-  }
-
-  const handleSubmit = useCallback(
+  const handleSignCommit = useCallback(
     async event => {
       event.preventDefault();
 
@@ -127,7 +123,7 @@ export default function Repo() {
               {/* FIXME: JUST A MOCK */}
               <p>No changes to sign.</p>
 
-              <Form onSubmit={handleSubmit} className="m-2">
+              <Form onSubmit={handleSignCommit} className="m-2">
                 <FormGroup>
                   <Input
                     required
@@ -159,7 +155,7 @@ export default function Repo() {
             </Col>
             <Panel md={3}>
               <PanelHeader title="Share" fontWeight="500" />
-              <Form className="m-2">
+              <Form className="m-2" onSubmit={handleInvite}>
                 <ShareImage />
                 <FormGroup>
                   <Input required type="email" placeholder="Enter emails" />

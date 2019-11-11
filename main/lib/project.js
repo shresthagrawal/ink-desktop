@@ -1,8 +1,10 @@
 import { basename } from 'path';
+import uuid from 'uuid/v4';
+import Git from 'nodegit';
 import * as projectStore from './store/project-store';
 import { gitCheckAndInit, gitStatus, gitCommit } from './git/utils';
-import uuid from 'uuid/v4';
 import { initInkFile, loadInkFile, applyDiff } from './ink-file/ink-file';
+import { getGraph } from './git/graph';
 import { getParsedDiff } from './parser/parser';
 
 export async function initProject(path) {
@@ -23,13 +25,16 @@ export async function addProject(path) {
   return projectStore.append(project);
 }
 
-export async function getProjectState(path) {
+export async function getProjectState(projectPath) {
   loadInkFile(path);
-  let delta = await getParsedDiff(path);
+  const delta = await getParsedDiff(projectPath);
   console.log(delta);
+
+  const repo = await Git.Repository.open(`${projectPath}/.git`);
   // TODO: Use the state of the ink file
-  let status = await gitStatus(path);
-  return status;
+  const state = await gitStatus(repo);
+  const graph = await getGraph(repo);
+  return { state, graph };
 }
 
 export async function commitProject(path, commitMessage, delta) {
