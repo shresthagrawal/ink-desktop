@@ -3,19 +3,16 @@ import { ipcRenderer as ipc } from 'electron-better-ipc';
 import styled from 'styled-components';
 import { inviteCollaborator } from '../../../main/lib/utils/mail';
 import Head from 'next/head';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
   Col,
   H5,
-  H6,
   Row,
   Button,
   Form,
   FormGroup,
-  Label,
+  Container,
 } from '@bootstrap-styled/v4';
-import Logo from '../../components/Logo';
 import Header from '../../components/Header';
 import useProjects from '../../effects/useProjects';
 import Page from '../../components/Page';
@@ -23,19 +20,22 @@ import Input from '../../components/Input';
 import Textarea from '../../components/Textarea';
 import Panel from '../../components/Panel';
 import PanelHeader from '../../components/PanelHeader';
+import ShareImage from '../../components/ShareImage';
 import useProjectState from '../../effects/useProjectState';
 import useInput from '../../effects/useInput';
 import useUser from '../../effects/useUser';
 
-const Container = styled.div`
+const FlexContainer = styled(Container)`
   display: flex;
   flex-flow: column;
   flex-grow: 1;
   min-height: 100%;
+  padding: 0;
 `;
 
 const TallRow = styled(Row)`
   flex-grow: 1;
+  margin: 0 !important;
 `;
 
 export default function Repo() {
@@ -88,7 +88,7 @@ export default function Repo() {
         <title>ununu • Ink</title>
       </Head>
       <Header user={user} />
-      <Container>
+      <FlexContainer fluid={true}>
         {project && (
           <TallRow>
             <Panel md={3}>
@@ -160,6 +160,7 @@ export default function Repo() {
             <Panel md={3}>
               <PanelHeader title="Share" fontWeight="500" />
               <Form className="m-2">
+                <ShareImage />
                 <FormGroup>
                   <Input required type="email" placeholder="Enter emails" />
                   <Textarea
@@ -175,7 +176,7 @@ export default function Repo() {
             </Panel>
           </TallRow>
         )}
-      </Container>
+      </FlexContainer>
     </Page>
   );
 }
