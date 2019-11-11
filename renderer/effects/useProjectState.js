@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ipcRenderer as ipc } from 'electron-better-ipc';
 
-export default function useProjectState(projectPath) {
+export default function useProjectState(projectPath, interval = null) {
   const [state, setState] = useState({
     status: {},
     graph: [],
@@ -18,7 +18,14 @@ export default function useProjectState(projectPath) {
       }
     };
 
-    if (projectPath) {
+    if (!projectPath) {
+      return;
+    }
+
+    if (interval !== null) {
+      const id = setInterval(getState, interval);
+      return () => clearInterval(id);
+    } else {
       getState();
     }
   }, [projectPath]);
