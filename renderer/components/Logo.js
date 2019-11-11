@@ -3,13 +3,14 @@ import styled from 'styled-components';
 
 const Svg = styled.svg`
   display: inline-block;
+  width: ${props => props.width || 100}px;
+  height: auto
 `;
 
-export default function Logo({ width, height }) {
+export default function Logo({ width }) {
   return (
     <Svg
       width={width}
-      height={height}
       viewBox="0 0 30 12"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

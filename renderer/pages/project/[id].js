@@ -26,7 +26,8 @@ import useProjectState from '../../effects/useProjectState';
 import useInput from '../../effects/useInput';
 import useUser from '../../effects/useUser';
 import CommitGraph from '../../components/CommitGraph';
-import { highlightSecondary } from '../../layout/colors';
+import { buttonPrimary, highlightSecondary } from '../../layout/colors';
+import HistoryIcon from '../../components/HistoryIcon';
 
 const FlexContainer = styled(Container)`
   display: flex;
@@ -48,11 +49,9 @@ const TrackIcon = styled.em`
 `;
 
 const TrackName = styled.span`
-  ${props => `
-    font-size: 20px;
-    line-height: 100%;
-    color: ${props.theme['$text-color']};
-  `};
+  font-size: 20px;
+  line-height: 100%;
+  color: ${buttonPrimary};
 `;
 
 const MoreInfo = styled.em`
@@ -65,7 +64,13 @@ const MoreInfo = styled.em`
 const TrackLine = styled(Col).attrs({
   md: 12,
 })`
-  margin-top: ${props => (props.offset ? 14 : 10)}px;
+  margin-top: ${props => (props.offsetTop ? 14 : 10)}px;
+`;
+
+const GraphTitle = styled(H5)`
+  display: flex;
+  flex-flow: row;
+  align-items: center;
 `;
 
 const mockCommits = [
@@ -135,7 +140,7 @@ export default function Repo() {
       <Head>
         <title>ununu • Ink</title>
       </Head>
-      <Header user={user} />
+      <Header user={user} project={project} />
       <FlexContainer fluid={true}>
         {project && (
           <TallRow>
@@ -151,7 +156,7 @@ export default function Repo() {
                   ))}
 
                   {delta.tracks.length > 5 && (
-                    <TrackLine offset>
+                    <TrackLine offsetTop>
                       <MoreInfo>
                         + {delta.tracks.length - 5} more tracks
                       </MoreInfo>
@@ -214,10 +219,16 @@ export default function Repo() {
                 </Button>
               </Form>
             </Panel>
-            <Col className="bg-info p-3">
+            <Col
+              className="bg-info p-3"
+              style={{ boxShadow: 'inset 0 0 7px rgba(0, 0, 0, .8)' }}
+            >
               <Row>
                 <Col md={12}>
-                  <H5>{project.name}</H5>
+                  <GraphTitle>
+                    <HistoryIcon width={25} marginRight={10} />{' '}
+                    <span>History</span>
+                  </GraphTitle>
                 </Col>
               </Row>
               <Row>
@@ -229,7 +240,7 @@ export default function Repo() {
             <Panel md={3}>
               <PanelHeader title="Share" fontWeight="500" />
               <Form className="m-2" onSubmit={handleInvite}>
-                <ShareImage />
+                <ShareImage style={{ margin: '10px 0' }} />
                 <FormGroup>
                   <Input required type="email" placeholder="Recipient" />
                   <Textarea required placeholder="Message" className="mt-2" />

@@ -1,25 +1,64 @@
 import styled from 'styled-components';
 import Link from 'next/link';
 import Logo from './Logo';
-import Heading from './Heading';
-import UserHeading from './UserHeading';
+import { backgroundPanel, buttonInfo } from '../layout/colors';
+import ProjectIcon from './ProjectIcon';
 
-const linkStyle = {
-  height: '60px',
-};
+const HomeLink = styled.a`
+  &:hover {
+    background-color: ${backgroundPanel};
+  }
+`;
 
-const Container = styled.div``;
+const LogoWrapper = styled.div`
+  padding: 14px 30px;
+`;
+
+const Container = styled.div`
+  display: flex;
+  flex-flow: row;
+  height: 60px;
+`;
+
+const Meta = styled.div`
+  display: flex;
+  flex-flow: row;
+  flex-grow: 1;
+`;
+
+const ProjectInfo = styled.p`
+  display: inline-block;
+  align-self: flex-start;
+  align-items: center;
+  line-height: 100%;
+  color: ${buttonInfo};
+`;
+
+const ProjectName = styled.span`
+  display: inline-block;
+  margin-left: 10px;
+`;
 
 export default function Header({ user, project }) {
   // TODO if project, add Download, Upload, Branch, Settings icon to UserHeading
   return (
     <Container>
       <Link href="/home">
-        <Heading>
-          <Logo width={29} height={22} />
-        </Heading>
+        <HomeLink href="/home">
+          <LogoWrapper>
+            <Logo width={80} />
+          </LogoWrapper>
+        </HomeLink>
       </Link>
-      <UserHeading>{user && user.email ? user.email : ''}</UserHeading>
+      <Meta>
+          {project && (
+            <ProjectInfo>
+              <ProjectIcon />
+              <ProjectName>{project.name}</ProjectName>
+            </ProjectInfo>
+          )}
+        <span>{user && user.email ? user.email : ''}</span>
+      </Meta>
     </Container>
   );
 }
