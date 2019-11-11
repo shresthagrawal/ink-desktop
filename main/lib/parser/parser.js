@@ -2,10 +2,13 @@ import { parseFile as abletonParseFile } from 'ableton-parser';
 import { defaultInkFile } from './../ink-file/ink-file';
 import { getByPath } from './../store/project-store';
 import glob from 'glob';
+import { diffArrayTooSimple } from '../utils/array';
+
+const getTrackEffectiveName = track => track.Name[0].EffectiveName[0].$.Value;
 
 export async function getParsedDiff(path) {
   let project = getByPath(path);
-  let delta = {};
+  let delta = {tracks: []};
   if (project.type === 'ableton-project') {
     let projectFile = getProjectFile(project);
     if (projectFile.length < 1) {
@@ -13,15 +16,14 @@ export async function getParsedDiff(path) {
     }
     console.log('Parsing Ableton Project', projectFile[0]);
     // TODO: What happens if there are multiple project files
-    let parser = await abletonParseFile(projectFile[0]);
-    let tracks = parser.getTracks()[0].AudioTrack;
-    const trackNames = tracks.map(
-      ({ Name }) => Name[0].EffectiveName[0].$.Value
-    );
-    if (
-      !Array.isArray(defaultInkFile.tracks) ||
-      JSON.stringify(trackNames) !== JSON.stringify(defaultInkFile.tracks)
-    ) {
+
+    const parser = await abletonParseFile(projectFile[0]);
+    const tracks = parser.getTracks()[0].AudioTrack;
+    const trackNames = tracks.map(getTrackEffectiveName);
+    const diffedTrackNames = !Array.isArray(defaultInkFile.tracks)
+      ? trackNames
+      : diffArrayTooSimple(defaultInkFile.tracks, trackNames);
+    if (diffedTrackNames.length > 0) {
       delta.tracks = trackNames;
     }
     return delta;

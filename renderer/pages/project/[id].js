@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import {
   Col,
   H5,
+  H6,
   Row,
   Button,
   Form,
@@ -25,6 +26,7 @@ import useProjectState from '../../effects/useProjectState';
 import useInput from '../../effects/useInput';
 import useUser from '../../effects/useUser';
 import CommitGraph from '../../components/CommitGraph';
+import { complementarySecondary } from '../../layout/colors';
 
 const FlexContainer = styled(Container)`
   display: flex;
@@ -39,7 +41,50 @@ const TallRow = styled(Row)`
   margin: 0 !important;
 `;
 
-const mockCommits = [{}];
+const TrackIcon = styled.em`
+  margin-right: 8px;
+  font-size: 24px;
+  font-style: normal;
+`;
+
+const TrackName = styled.span`
+  ${props => `
+    font-size: 20px;
+    line-height: 100%;
+    color: ${props.theme['$text-color']};
+  `};
+`;
+
+const MoreInfo = styled.em`
+  font-style: normal;
+  font-size: 16px;
+  line-height: 100%;
+  color: ${complementarySecondary};
+`;
+
+const TrackLine = styled(Col).attrs({
+  md: 12,
+})`
+  margin-top: ${props => (props.offset ? 14 : 10)}px;
+`;
+
+const mockCommits = [
+  {
+    author: {
+      name: 'Emma',
+    },
+    message: 'Create project, add first drum stems',
+    tags: ['drums'],
+  },
+  {
+    author: {
+      name: 'Tim',
+    },
+    message: 'Tweak some sounds, add voice samples',
+    tags: ['vocals', 'fx'],
+  },
+];
+const trackEmoji = ['🎸', '🥁', '🎺', '🎶', '🎷'];
 
 export default function Repo() {
   const { query } = useRouter();
@@ -53,7 +98,6 @@ export default function Repo() {
     project ? project.path : null
   );
 
-  console.log(delta && JSON.stringify(delta, null, 2));
   const {
     value: commitMessage,
     bind: bindCommitMessage,
@@ -94,9 +138,25 @@ export default function Repo() {
         {project && (
           <TallRow>
             <Panel md={3}>
-              <PanelHeader title="Local Changes" fontWeight="bold" />
-              {delta.tracks &&
-                delta.tracks.map(trackName => <p>{trackName}</p>)}
+              <PanelHeader title="Changed Tracks" fontWeight="bold" />
+              {delta.tracks && delta.tracks.length > 0 && (
+                <React.Fragment>
+                  {delta.tracks.slice(1, 5).map((trackName, index) => (
+                    <TrackLine key={`new-${index}`}>
+                      <TrackIcon>{trackEmoji[index]}</TrackIcon>
+                      <TrackName>{trackName}</TrackName>
+                    </TrackLine>
+                  ))}
+
+                  {delta.tracks.length > 5 && (
+                    <TrackLine offset>
+                      <MoreInfo>
+                        + {delta.tracks.length - 5} more tracks
+                      </MoreInfo>
+                    </TrackLine>
+                  )}
+                </React.Fragment>
+              )}
 
               {/*status.new && status.new.length > 0 && (
                 <React.Fragment>
@@ -129,10 +189,7 @@ export default function Repo() {
                 </React.Fragment>
               )*/}
 
-              {/* FIXME: JUST A MOCK */}
-              <p>No changes to sign.</p>
-
-              <Form onSubmit={handleSignCommit} className="m-2">
+              <Form onSubmit={handleSignCommit} className="m-2 mt-4">
                 <FormGroup>
                   <Input
                     required
@@ -163,7 +220,7 @@ export default function Repo() {
               </Row>
               <Row>
                 <Col md={12}>
-                  <CommitGraph graph={graph} />
+                  <CommitGraph graph={mockCommits.concat(graph)} />
                 </Col>
               </Row>
             </Col>
