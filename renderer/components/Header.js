@@ -24,12 +24,16 @@ const Meta = styled.div`
   display: flex;
   flex-flow: row;
   flex-grow: 1;
+  justify-content: center;
 `;
 
-const ProjectInfo = styled.p`
-  display: inline-block;
-  align-self: flex-start;
+const ProjectInfo = styled.div`
+  display: flex;
+  flex-grow: 1;
+  justify-self: flex-start;
   align-items: center;
+  margin: 0 auto;
+  padding: 0px 25px;
   line-height: 100%;
   color: ${buttonInfo};
 `;
@@ -37,6 +41,20 @@ const ProjectInfo = styled.p`
 const ProjectName = styled.span`
   display: inline-block;
   margin-left: 10px;
+`;
+
+const UserInfo = styled(ProjectInfo)`
+  flex-grow: 0;
+  margin-right: 0;
+  justify-self: flex-end;
+`;
+
+const UserImage = styled.div`
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+  border-radius: 30px;
+  background-color: #ddd;
 `;
 
 export default function Header({ user, project }) {
@@ -51,13 +69,18 @@ export default function Header({ user, project }) {
         </HomeLink>
       </Link>
       <Meta>
-          {project && (
-            <ProjectInfo>
-              <ProjectIcon />
-              <ProjectName>{project.name}</ProjectName>
-            </ProjectInfo>
-          )}
-        <span>{user && user.email ? user.email : ''}</span>
+        {project && (
+          <ProjectInfo>
+            <ProjectIcon />
+            <ProjectName>{project.name}</ProjectName>
+          </ProjectInfo>
+        )}
+        {user && (
+          <UserInfo>
+            <UserImage />
+            {user.email}
+          </UserInfo>
+        )}
       </Meta>
     </Container>
   );

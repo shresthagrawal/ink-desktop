@@ -71,7 +71,7 @@ const MoreInfo = styled.em`
 const TrackLine = styled(Col).attrs({
   md: 12,
 })`
-  margin-top: ${props => (props.offsetTop ? 14 : 10)}px;
+  margin-top: ${props => (props.offsetTop || 0) + 10}px;
 `;
 
 const GraphTitle = styled(H5)`
@@ -182,7 +182,7 @@ export default function Repo() {
                   ))}
 
                   {delta.tracks.length > 5 && (
-                    <TrackLine offsetTop>
+                    <TrackLine offsetTop={4}>
                       <MoreInfo>
                         + {delta.tracks.length - 5} more tracks
                       </MoreInfo>
@@ -190,7 +190,7 @@ export default function Repo() {
                   )}
 
                   {delta.tracks.length === 0 && (
-                    <TrackLine offsetTop>
+                    <TrackLine offsetTop={2}>
                       <MoreInfo>No new tracks.</MoreInfo>
                     </TrackLine>
                   )}
