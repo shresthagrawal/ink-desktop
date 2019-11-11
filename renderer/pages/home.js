@@ -37,20 +37,27 @@ const Home = () => {
   const { projects, setProjects } = useProjects();
 
   const { value: email, bind: bindEmail, reset: resetEmail } = useInput('');
-  const { value: password, bind: bindPassword, reset: resetPassword } = useInput('');
+  const {
+    value: password,
+    bind: bindPassword,
+    reset: resetPassword,
+  } = useInput('');
 
-  const handleSubmit = useCallback(async (event) => {
-    event.preventDefault();
+  const handleSubmit = useCallback(
+    async event => {
+      event.preventDefault();
 
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.stopPropagation();
-    }
+      const form = event.currentTarget;
+      if (form.checkValidity() === false) {
+        event.stopPropagation();
+      }
 
-    // TODO call API once platform in place
-    const user = await ipc.callMain('set-user', { email, password });
-    setUser(user);
-  }, [email, password]);
+      // TODO call API once platform in place
+      const user = await ipc.callMain('set-user', { email, password });
+      setUser(user);
+    },
+    [email, password]
+  );
 
   const handleChooseRepository = useCallback(async () => {
     const { canceled, filePaths } = await remote.dialog.showOpenDialog({
@@ -78,77 +85,85 @@ const Home = () => {
       </Head>
       <Header user={user} />
       <div>
-        {user && user.email ? (<div>
-          <Row>
-            <Panel md={2}/>
-            <Col className="bg-info p-3">
-              <Row>
-                <Col md={12}>
-                  <H5>Projects</H5>
-                </Col>
-              </Row>
-
-              {projects.length > 0 ? (
-                projects.map(({ id, name, path }) => (
-                  <Row key={`project-${id}`}>
-                    <Col md={12}>
-                      <Link href={`/project/${id}`}>
-                        <a href="#">
-                          <ProjectName>
-                            {name}
-                          </ProjectName>
-                        </a>
-                      </Link>
-                    </Col>
-                  </Row>
-                ))
-              ) : (
+        {user && user.email ? (
+          <div>
+            <Row>
+              <Panel md={2} />
+              <Col className="bg-info p-3">
                 <Row>
                   <Col md={12}>
-                    <Message>You have no active projects.</Message>
+                    <H5>Projects</H5>
                   </Col>
                 </Row>
-              )}
 
-              <Row>
-                <Col md={12}>
-                  <Button className="mr-2" onClick={handleChooseRepository}>
-                    Add
-                  </Button>
-                  <Button className="mr-2" color="secondary">
-                    Clone
-                  </Button>
-                  <Button className="mr-2" color="info">
-                    Search
-                  </Button>
-                  {/*<Button className="mr-2" onClick={handleResetProjects}>
+                {projects.length > 0 ? (
+                  projects.map(({ id, name, path }) => (
+                    <Row key={`project-${id}`}>
+                      <Col md={12}>
+                        <Link href="/project/[id]" as={`/project/${id}`}>
+                          <a href={`/project/${id}`}>
+                            <ProjectName>{name}</ProjectName>
+                          </a>
+                        </Link>
+                      </Col>
+                    </Row>
+                  ))
+                ) : (
+                  <Row>
+                    <Col md={12}>
+                      <Message>You have no active projects.</Message>
+                    </Col>
+                  </Row>
+                )}
+
+                <Row>
+                  <Col md={12}>
+                    <Button className="mr-2" onClick={handleChooseRepository}>
+                      Add
+                    </Button>
+                    <Button className="mr-2" color="secondary">
+                      Clone
+                    </Button>
+                    <Button className="mr-2" color="info">
+                      Search
+                    </Button>
+                    {/*<Button className="mr-2" onClick={handleResetProjects}>
                     Reset Projects
                   </Button>*/}
-                </Col>
-              </Row>
-            </Col>
+                  </Col>
+                </Row>
+              </Col>
 
-            <Panel md={3}>
-            </Panel>
-          </Row>
-        </div>
-      ) : (
-        <Jumbotron className="py-3">
-          <Form onSubmit={handleSubmit}>
-            <FormGroup>
-              <Label>Email</Label>
-              <Input required type="email" placeholder="Enter email" {...bindEmail} />
-            </FormGroup>
-            <FormGroup>
-              <Label>Password</Label>
-              <Input required type="password" placeholder="Enter password" {...bindPassword} />
-            </FormGroup>
-            <Button className="mr-2" type="submit">
-              Login
-            </Button>
-          </Form>
-        </Jumbotron>
-      )}
+              <Panel md={3}></Panel>
+            </Row>
+          </div>
+        ) : (
+          <Jumbotron className="py-3">
+            <Form onSubmit={handleSubmit}>
+              <FormGroup>
+                <Label>Email</Label>
+                <Input
+                  required
+                  type="email"
+                  placeholder="Enter email"
+                  {...bindEmail}
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label>Password</Label>
+                <Input
+                  required
+                  type="password"
+                  placeholder="Enter password"
+                  {...bindPassword}
+                />
+              </FormGroup>
+              <Button className="mr-2" type="submit">
+                Login
+              </Button>
+            </Form>
+          </Jumbotron>
+        )}
       </div>
     </Page>
   );
