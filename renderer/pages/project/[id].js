@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import { ipcRenderer as ipc } from 'electron-better-ipc';
 import Head from 'next/head';
 import Link from 'next/link';
+import { inviteCollaborator } from '../../../main/lib/utils/mail';
 import { useRouter } from 'next/router';
 import {
   Col,
@@ -60,6 +61,14 @@ export default function Repo() {
     },
     [project, commitMessage]
   );
+
+  const handleInvite = useCallback(async event => {
+    event.preventDefault();
+    await inviteCollaborator([
+      'hallostefankarl@gmail.com',
+      'shresthagrawal.31@gmail.com',
+    ]);
+  });
 
   return (
     <Page>
