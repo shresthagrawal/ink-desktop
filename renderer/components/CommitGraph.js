@@ -33,6 +33,22 @@ const Line = styled.div`
   background: ${complementaryPrimary};
 `;
 
+const BranchLine = styled(Line)`
+  top: 18px;
+  left: 36px;
+  height: 60px;
+  transform: rotate(-27deg);
+  background: ${props => props.color};
+`;
+
+const MergeLine = styled(BranchLine)`
+top: auto;
+  bottom: -20px;
+  left: 36px;
+  height: 60px;
+  transform: rotate(33deg);
+`;
+
 const AuthorImage = styled.div`
   display: inline-block;
   width: 30px;
@@ -40,6 +56,12 @@ const AuthorImage = styled.div`
   margin-right: 10px;
   border-radius: 30px;
   background: #ddd;
+`;
+
+const BranchGraph = styled.ul`
+  margin: 0;
+  padding: 0;
+  list-style: none;
 `;
 
 const Item = styled.li`
@@ -109,16 +131,29 @@ export default function CommitGraph({ graph }) {
             <AuthorImage />
             <Name>{author.name}:</Name> <Message>{message}</Message>
           </Commit>
-          {subBranch.map(({ hash, author, message }) => (
-            <Item key={`commit-${hash}`} level={1} color={highlightSecondary}>
-              <Commit>
-                <Dot />
-                <Line />
-                <AuthorImage />
-                <Name>{author.name}:</Name> <Message>message</Message>
-              </Commit>
-            </Item>
-          ))}
+
+          {subBranch.length > 0 && (
+            <>
+              <BranchLine color={highlightSecondary} />
+              <BranchGraph>
+                {subBranch.map(({ hash, author, message }) => (
+                  <Item
+                    key={`commit-${hash}`}
+                    level={1}
+                    color={highlightSecondary}
+                  >
+                    <Commit>
+                      <Dot />
+                      <Line />
+                      <AuthorImage />
+                      <Name>{author.name}:</Name> <Message>{message}</Message>
+                    </Commit>
+                  </Item>
+                ))}
+              </BranchGraph>
+              <MergeLine color={highlightSecondary} />
+            </>
+          )}
         </Item>
       ))}
     </Container>
