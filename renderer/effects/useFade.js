@@ -1,9 +1,9 @@
 import { useTransition } from 'react-spring';
 
-export default function useFade(show) {
+export default function useFade(show, positionAbsolute = true) {
   return useTransition(show, null, {
     from: {
-      position: 'absolute',
+      position: positionAbsolute ? 'absolute' : 'static',
       opacity: 0,
       transform: 'translate3d(0,-10px,0)',
     },

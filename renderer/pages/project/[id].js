@@ -35,6 +35,7 @@ import HistoryIcon from '../../components/HistoryIcon';
 import useTemporaryState from '../../effects/useTemporaryState';
 import { animated } from 'react-spring';
 import useFade from '../../effects/useFade';
+import useTimeout from '../../effects/useTimeout';
 
 const FlexContainer = styled(Container)`
   display: flex;
@@ -130,7 +131,7 @@ const mockCommits = [
     },
     message: 'Set up fx, reverb, delay',
     tags: ['vocals', 'fx'],
-  }
+  },
 ];
 const trackEmoji = ['🎸', '🥁', '🎺', '🎶', '🎷'];
 
@@ -143,6 +144,12 @@ export default function Repo() {
   const mailSentTransitions = useFade(mailSent);
   const commitSignedTransitions = useFade(commitSigned);
   const project = projects.find(project => project.id === query.id);
+
+  const [showMockCommit, setShowMockCommit] = useState(false);
+  const beginMockCommitTimeout = useTimeout(
+    () => setShowMockCommit(true),
+    6000
+  );
 
   // state is of the following structure:
   // state = { new: Array(), modified: Array(), deleted: Array() }
@@ -176,13 +183,14 @@ export default function Repo() {
 
   const handleInvite = useCallback(async event => {
     event.preventDefault();
-    await inviteCollaborators(
+    /* await inviteCollaborators(
       ['hallostefankarl@gmail.com', 'shresthagrawal.31@gmail.com'],
       'Hey Stefan, please have a look at my track!',
       project.name,
       slugify(project.name)
-    );
+    ); */
     setMailSent(true);
+    beginMockCommitTimeout();
   });
 
   return (
@@ -292,7 +300,10 @@ export default function Repo() {
               </Row>
               <Row>
                 <Col md={12}>
-                  <CommitGraph graph={mockCommits.concat(graph)} />
+                  <CommitGraph
+                    graph={mockCommits.concat(graph)}
+                    showMockCommit={showMockCommit}
+                  />
                 </Col>
               </Row>
             </Col>
