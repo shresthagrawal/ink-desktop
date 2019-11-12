@@ -150,12 +150,12 @@ export default function Repo() {
 
   const handleInvite = useCallback(async event => {
     event.preventDefault();
-    /* await inviteCollaborators(
+    await inviteCollaborators(
       ['hallostefankarl@gmail.com', 'shresthagrawal.31@gmail.com'],
       'Hey Stefan, please have a look at my track!',
       project.name,
       slugify(project.name)
-    ); */
+    );
     setMailSent(true);
     beginMockCommitTimeout();
   });
