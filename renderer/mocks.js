@@ -4,7 +4,7 @@ export const initialMockCommits = [
   {
     hash: 'foo',
     author: {
-      name: 'Emma',
+      name: 'Shresth',
     },
     message: 'Create project',
     tags: ['genesis'],
@@ -14,7 +14,7 @@ export const initialMockCommits = [
         author: {
           name: 'Emma',
         },
-        message: 'Add bass solo',
+        message: 'Add bass line',
       },
       {
         hash: 'foo2',
@@ -28,17 +28,17 @@ export const initialMockCommits = [
   {
     hash: 'bar',
     author: {
-      name: 'Tim',
+      name: 'Shresth',
     },
-    message: 'Tweak some sounds',
+    message: 'Add guitar',
     tags: ['vocals', 'fx'],
   },
   {
     hash: 'bar2',
     author: {
-      name: 'Sarah',
+      name: 'Shresth',
     },
-    message: 'Set up fx, reverb, delay',
+    message: 'Add delay',
     tags: ['vocals', 'fx'],
   },
 ];
