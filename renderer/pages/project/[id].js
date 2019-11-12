@@ -37,6 +37,7 @@ import { animated } from 'react-spring';
 import useFade from '../../effects/useFade';
 import useTimeout from '../../effects/useTimeout';
 import { initialMockCommits, trackEmoji } from '../../mocks';
+import ActivityIcon from '../../components/ActivityIcon';
 
 const FlexContainer = styled(Container)`
   display: flex;
@@ -90,6 +91,15 @@ const SendSuccess = styled(animated.em)`
   font-weight: bold;
   font-size: 18px;
   color: ${complementaryPrimary};
+`;
+
+const IconLink = styled.div`
+  transition: opacity ease-in-out 0.15s;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
 `;
 
 export default function Repo() {
@@ -150,6 +160,11 @@ export default function Repo() {
     beginMockCommitTimeout();
   });
 
+  const handleRefreshProject = useCallback(async event => {
+    event.preventDefault();
+    await reloadProjectState();
+  });
+
   return (
     <Page>
       <Head>
@@ -160,7 +175,15 @@ export default function Repo() {
         {project && (
           <TallRow>
             <Panel md={3}>
-              <PanelHeader title="Changed Tracks" fontWeight="bold" />
+              <PanelHeader
+                title="Changed Tracks"
+                fontWeight="bold"
+                renderIcon={() => (
+                  <IconLink onClick={handleRefreshProject}>
+                    <ActivityIcon />
+                  </IconLink>
+                )}
+              />
               {delta.tracks && (
                 <>
                   {delta.tracks.slice(1, 5).map((trackName, index) => (
