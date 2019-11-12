@@ -6,16 +6,8 @@ import {
   highlightSecondary,
 } from '../layout/colors';
 import useFade from '../effects/useFade';
-import { Form } from '@bootstrap-styled/v4';
 import { animated } from 'react-spring';
-
-const mockCommit = {
-  hash: 'stefanscommit1337',
-  author: {
-    name: 'Stefan',
-  },
-  message: "Adjust EQ on Shresth's rec",
-};
+import { timedCommit } from '../mocks';
 
 const Container = styled.ul`
   display: flex;
@@ -180,8 +172,8 @@ export default function CommitGraph({ graph, showMockCommit }) {
                 <Dot />
                 <Line />
                 <AuthorImage />
-                <Name>{mockCommit.author.name}:</Name>{' '}
-                <Message>{mockCommit.message}</Message>
+                <Name>{timedCommit.author.name}:</Name>{' '}
+                <Message>{timedCommit.message}</Message>
               </Commit>
             </Item>
           )

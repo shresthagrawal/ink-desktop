@@ -36,6 +36,7 @@ import useTemporaryState from '../../effects/useTemporaryState';
 import { animated } from 'react-spring';
 import useFade from '../../effects/useFade';
 import useTimeout from '../../effects/useTimeout';
+import { initialMockCommits, trackEmoji } from '../../mocks';
 
 const FlexContainer = styled(Container)`
   display: flex;
@@ -90,50 +91,6 @@ const SendSuccess = styled(animated.em)`
   font-size: 18px;
   color: ${complementaryPrimary};
 `;
-
-const mockCommits = [
-  {
-    hash: 'foo',
-    author: {
-      name: 'Emma',
-    },
-    message: 'Create project',
-    tags: ['genesis'],
-    subBranch: [
-      {
-        hash: 'foo1',
-        author: {
-          name: 'Emma',
-        },
-        message: 'Add bass solo',
-      },
-      {
-        hash: 'foo2',
-        author: {
-          name: 'Emma',
-        },
-        message: 'Adjust compressor settings',
-      },
-    ],
-  },
-  {
-    hash: 'bar',
-    author: {
-      name: 'Tim',
-    },
-    message: 'Tweak some sounds',
-    tags: ['vocals', 'fx'],
-  },
-  {
-    hash: 'bar2',
-    author: {
-      name: 'Sarah',
-    },
-    message: 'Set up fx, reverb, delay',
-    tags: ['vocals', 'fx'],
-  },
-];
-const trackEmoji = ['🎸', '🥁', '🎺', '🎶', '🎷'];
 
 export default function Repo() {
   const { query } = useRouter();
@@ -301,7 +258,7 @@ export default function Repo() {
               <Row>
                 <Col md={12}>
                   <CommitGraph
-                    graph={mockCommits.concat(graph)}
+                    graph={initialMockCommits.concat(graph)}
                     showMockCommit={showMockCommit}
                   />
                 </Col>
