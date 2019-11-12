@@ -14,9 +14,9 @@ const commitToObject = commit => ({
 // <https://github.com/nodegit/nodegit/issues/1174>
 export async function getGraph(repo) {
   const commits = [];
-  const masterCommit = await repo.getMasterCommit();
 
   try {
+    const masterCommit = await repo.getMasterCommit();
     const history = masterCommit.history(Git.Revwalk.SORT.REVERSE);
 
     await new Promise((resolve, reject) => {
@@ -31,7 +31,7 @@ export async function getGraph(repo) {
       history.start();
     });
   } catch (err) {
-    // no history found, empty repository
+    // no history found or no master found, empty repository
     if (err.errno === -3) {
       return [];
     } else {
