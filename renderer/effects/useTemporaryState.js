@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export default function useTimedState(initialValue, delay) {
+export default function useTemporaryState(initialValue, delay) {
   const [value, setValue] = useState(initialValue);
 
   useEffect(() => {

@@ -10,12 +10,13 @@ const Container = styled.ul`
   display: flex;
   flex-flow: column;
 
-  margin: 0;
+  margin: 10px 0 0;
   padding: 0;
   list-style: none;
 `;
 
 const Dot = styled.div`
+  z-index: 20;
   display: inline-block;
   width: 16px;
   height: 16px;
@@ -34,15 +35,16 @@ const Line = styled.div`
 `;
 
 const BranchLine = styled(Line)`
-  top: 18px;
-  left: 36px;
-  height: 60px;
-  transform: rotate(-27deg);
+  top: 8px;
+  left: 30px;
+  z-index: 10;
+  height: 52px;
+  transform: rotate(-33deg);
   background: ${props => props.color};
 `;
 
 const MergeLine = styled(BranchLine)`
-top: auto;
+  top: auto;
   bottom: -20px;
   left: 36px;
   height: 60px;
@@ -64,16 +66,20 @@ const BranchGraph = styled.ul`
   list-style: none;
 `;
 
+const Message = styled.p`
+  display: inline-block;
+  font-size: 20px;
+  line-height: 140%;
+  margin: 1px 0;
+  color: ${complementaryPrimary};
+`;
+
 const Item = styled.li`
   position: relative;
   display: flex;
   flex-flow: column;
   margin: 0 0 0 ${props => (props.level ? props.level * 30 : 0)}px;
   padding: 0;
-
-  &:first-child {
-    margin-top: 10px;
-  }
 
   &:last-child {
     ${Line} {
@@ -95,6 +101,10 @@ const Item = styled.li`
       ${Line} {
         background: ${props.color};
       }
+
+      ${Message} {
+        color: ${props.color};
+      }
     `}
 `;
 
@@ -110,14 +120,6 @@ const Name = styled.p`
   font-size: 20px;
   line-height: 140%;
   color: ${buttonInfo};
-`;
-
-const Message = styled.p`
-  display: inline-block;
-  font-size: 20px;
-  line-height: 140%;
-  margin: 1px 0;
-  color: ${complementaryPrimary};
 `;
 
 export default function CommitGraph({ graph }) {

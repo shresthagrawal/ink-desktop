@@ -32,7 +32,7 @@ import {
   highlightSecondary,
 } from '../../layout/colors';
 import HistoryIcon from '../../components/HistoryIcon';
-import useTimedState from '../../effects/useTimedState';
+import useTemporaryState from '../../effects/useTemporaryState';
 import { animated } from 'react-spring';
 import useFade from '../../effects/useFade';
 
@@ -123,6 +123,14 @@ const mockCommits = [
     message: 'Tweak some sounds',
     tags: ['vocals', 'fx'],
   },
+  {
+    hash: 'bar2',
+    author: {
+      name: 'Sarah',
+    },
+    message: 'Set up fx, reverb, delay',
+    tags: ['vocals', 'fx'],
+  }
 ];
 const trackEmoji = ['🎸', '🥁', '🎺', '🎶', '🎷'];
 
@@ -130,8 +138,8 @@ export default function Repo() {
   const { query } = useRouter();
   const { projects } = useProjects();
   const { user } = useUser();
-  const [commitSigned, setCommitSigned] = useTimedState(false, 5000);
-  const [mailSent, setMailSent] = useTimedState(false, 5000);
+  const [commitSigned, setCommitSigned] = useTemporaryState(false, 5000);
+  const [mailSent, setMailSent] = useTemporaryState(false, 5000);
   const mailSentTransitions = useFade(mailSent);
   const commitSignedTransitions = useFade(commitSigned);
   const project = projects.find(project => project.id === query.id);
