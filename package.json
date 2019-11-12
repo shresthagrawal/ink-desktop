@@ -23,6 +23,7 @@
     "electron-serve": "^0.3.0",
     "electron-store": "^4.0.0",
     "glob": "7.1.5",
+    "next-images": "^1.2.0",
     "nodegit": "^0.25.1",
     "nodemailer": "6.3.1",
     "react-spring": "^8.0.27",
