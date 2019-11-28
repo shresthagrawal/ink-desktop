@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { ipcRenderer as ipc } from 'electron-better-ipc';
 import styled from 'styled-components';
 import slugify from 'slugify';
@@ -38,8 +38,6 @@ import { animated } from 'react-spring';
 import useFade from '../../effects/useFade';
 import { initialMockCommits, trackEmoji } from '../../mocks';
 import ActivityIcon from '../../components/ActivityIcon';
-import PlayIcon from '../../components/PlayIcon';
-import waveform from './waveform.png';
 
 const FlexContainer = styled(Container)`
   display: flex;
@@ -110,17 +108,6 @@ const IconLink = styled.div`
   &:hover {
     opacity: 0.8;
   }
-`;
-
-const Player = styled(Row)`
-  background-color: ${playerBackground};
-`;
-
-const PlayButton = styled.div`
-  width: 44px;
-  height: 44px;
-  border-radius: 44px;
-  background: ${buttonPrimary};
 `;
 
 export default function Repo() {
@@ -303,21 +290,6 @@ export default function Repo() {
               className="bg-info"
               style={{ boxShadow: 'inset 0 0 7px rgba(0, 0, 0, .8)' }}
             >
-              <Player className="p-3">
-                <Col>
-                  <Row>
-                    <Col sm={1}>
-                      <PlayButton>
-                        <PlayIcon />
-                      </PlayButton>
-                    </Col>
-                    <Col style={{ lineHeight: '40px', color: 'white' }}>
-                      {project.name}
-                    </Col>
-                  </Row>
-                  <img src={waveform} height="129" style={{ margin: 'auto' }} />
-                </Col>
-              </Player>
               <Row className="mt-3">
                 <Col md={12}>
                   <GraphTitle>
