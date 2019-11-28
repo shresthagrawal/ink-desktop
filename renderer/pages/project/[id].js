@@ -36,7 +36,6 @@ import HistoryIcon from '../../components/HistoryIcon';
 import useTemporaryState from '../../effects/useTemporaryState';
 import { animated } from 'react-spring';
 import useFade from '../../effects/useFade';
-import useTimeout from '../../effects/useTimeout';
 import { initialMockCommits, trackEmoji } from '../../mocks';
 import ActivityIcon from '../../components/ActivityIcon';
 import PlayIcon from '../../components/PlayIcon';
@@ -129,16 +128,13 @@ export default function Repo() {
   const { projects } = useProjects();
   const { user } = useUser();
   const [commitSigned, setCommitSigned] = useTemporaryState(false, 5000);
-  const [mailSent, setMailSent] = useTemporaryState(false, 5000);
+  const [mailSent, setMailSent] = useTemporaryState(false, 5000, () => {
+    resetInvitationRecipient();
+    resetInvitationMessage();
+  });
   const mailSentTransitions = useFade(mailSent);
   const commitSignedTransitions = useFade(commitSigned);
   const project = projects.find(project => project.id === query.id);
-
-  const [showMockCommit, setShowMockCommit] = useState(false);
-  const beginMockCommitTimeout = useTimeout(
-    () => setShowMockCommit(true),
-    6000
-  );
 
   // state is of the following structure:
   // state = { new: Array(), modified: Array(), deleted: Array() }
@@ -156,6 +152,12 @@ export default function Repo() {
     value: invitationRecipient,
     bind: bindInvitationRecipient,
     reset: resetInvitationRecipient,
+  } = useInput('');
+
+  const {
+    value: invitationMessage,
+    bind: bindInvitationMessage,
+    reset: resetInvitationMessage,
   } = useInput('');
 
   const handleSignCommit = useCallback(
@@ -184,12 +186,11 @@ export default function Repo() {
       .map(recipient => recipient.trim());
     await inviteCollaborators(
       recipients,
-      'Hey Stefan, please have a look at my track!',
+      invitationMessage,
       project.name,
       slugify(project.name)
     );
     setMailSent(true);
-    beginMockCommitTimeout();
   });
 
   const handleRefreshProject = useCallback(async event => {
@@ -327,10 +328,7 @@ export default function Repo() {
               </Row>
               <Row>
                 <Col md={12}>
-                  <CommitGraph
-                    graph={initialMockCommits.concat(graph)}
-                    showMockCommit={showMockCommit}
-                  />
+                  <CommitGraph graph={initialMockCommits.concat(graph)} />
                 </Col>
               </Row>
             </Col>
@@ -345,7 +343,12 @@ export default function Repo() {
                     placeholder="Recipient"
                     {...bindInvitationRecipient}
                   />
-                  <Textarea required placeholder="Message" className="mt-2" />
+                  <Textarea
+                    required
+                    placeholder="Message"
+                    className="mt-2"
+                    {...bindInvitationMessage}
+                  />
                 </FormGroup>
                 <Button className="mr-2" type="submit">
                   Send

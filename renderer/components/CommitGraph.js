@@ -5,9 +5,6 @@ import {
   complementaryPrimary,
   highlightSecondary,
 } from '../layout/colors';
-import useFade from '../effects/useFade';
-import { animated } from 'react-spring';
-import { timedCommit } from '../mocks';
 
 const Container = styled.ul`
   display: flex;
@@ -125,9 +122,7 @@ const Name = styled.p`
   color: ${buttonInfo};
 `;
 
-export default function CommitGraph({ graph, showMockCommit }) {
-  const mockCommitTransitions = useFade(showMockCommit, false);
-
+export default function CommitGraph({ graph }) {
   return (
     <Container>
       {graph.map(({ hash, author, message, subBranch = [] }) => (
@@ -163,21 +158,6 @@ export default function CommitGraph({ graph, showMockCommit }) {
           )}
         </Item>
       ))}
-
-      {mockCommitTransitions.map(
-        ({ item, key, props }) =>
-          item && (
-            <Item as={animated.li} key={key} style={props}>
-              <Commit>
-                <Dot />
-                <Line />
-                <AuthorImage />
-                <Name>{timedCommit.author.name}:</Name>{' '}
-                <Message>{timedCommit.message}</Message>
-              </Commit>
-            </Item>
-          )
-      )}
     </Container>
   );
 }
