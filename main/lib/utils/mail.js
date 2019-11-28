@@ -18,10 +18,8 @@ export async function inviteCollaborators(
     port: 465,
     secure: true,
     auth: {
-      // FIXME: I'll revoke that token after the MVP
       user: 'apikey',
-      pass:
-        'redacted',
+      pass: process.env.SENDGRID_TOKEN,
     },
   });
 
