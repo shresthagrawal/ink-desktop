@@ -80,6 +80,14 @@ const TrackLine = styled(Col).attrs({
   margin-top: ${props => (props.offsetTop || 0) + 10}px;
 `;
 
+const MoreTracksLine = styled(TrackLine)`
+  margin-top: 14px;
+`;
+
+const NoNewTracksLine = styled(TrackLine)`
+  margin-top: 12px;
+`;
+
 const GraphTitle = styled(H5)`
   display: flex;
   flex-flow: row;
@@ -144,6 +152,12 @@ export default function Repo() {
     reset: resetCommitMessage,
   } = useInput('');
 
+  const {
+    value: invitationRecipient,
+    bind: bindInvitationRecipient,
+    reset: resetInvitationRecipient,
+  } = useInput('');
+
   const handleSignCommit = useCallback(
     async event => {
       event.preventDefault();
@@ -164,8 +178,12 @@ export default function Repo() {
 
   const handleInvite = useCallback(async event => {
     event.preventDefault();
+
+    const recipients = invitationRecipient
+      .split(/[ ,]+/)
+      .map(recipient => recipient.trim());
     await inviteCollaborators(
-      ['hallostefankarl@gmail.com', 'shresthagrawal.31@gmail.com'],
+      recipients,
       'Hey Stefan, please have a look at my track!',
       project.name,
       slugify(project.name)
@@ -208,17 +226,17 @@ export default function Repo() {
                   ))}
 
                   {delta.tracks.length > 5 && (
-                    <TrackLine offsetTop={4}>
+                    <MoreTracksLine>
                       <MoreInfo>
                         + {delta.tracks.length - 5} more tracks
                       </MoreInfo>
-                    </TrackLine>
+                    </MoreTracksLine>
                   )}
 
                   {delta.tracks.length === 0 && (
-                    <TrackLine offsetTop={2}>
+                    <NoNewTracksLine>
                       <MoreInfo>No new tracks.</MoreInfo>
-                    </TrackLine>
+                    </NoNewTracksLine>
                   )}
                 </>
               )}
@@ -292,11 +310,11 @@ export default function Repo() {
                         <PlayIcon />
                       </PlayButton>
                     </Col>
-                    <Col style={{ lineHeight: '40px', color: 'white'}}>
+                    <Col style={{ lineHeight: '40px', color: 'white' }}>
                       {project.name}
                     </Col>
                   </Row>
-                  <img src={waveform} height="129" style={{ margin: 'auto' }}/>
+                  <img src={waveform} height="129" style={{ margin: 'auto' }} />
                 </Col>
               </Player>
               <Row className="mt-3">
@@ -321,7 +339,12 @@ export default function Repo() {
               <Form className="m-2" onSubmit={handleInvite}>
                 <ShareImage style={{ margin: '10px 0' }} />
                 <FormGroup>
-                  <Input required type="email" placeholder="Recipient" />
+                  <Input
+                    required
+                    type="email"
+                    placeholder="Recipient"
+                    {...bindInvitationRecipient}
+                  />
                   <Textarea required placeholder="Message" className="mt-2" />
                 </FormGroup>
                 <Button className="mr-2" type="submit">

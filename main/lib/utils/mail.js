@@ -23,18 +23,14 @@ export async function inviteCollaborators(
     },
   });
 
-  // TODO: Correct the template after pitch
   const user = userStore.get();
-  const body = `Shresth Agrawal has invited you in for a new session on ununu for their track “tea and biscuits”.
+  const body = `${user.email} has invited you to a new session on ununu for their project “${projectName}”.
 Listen here: https://ununu.io/collaborate/${projectHash}
 Start collaborating here: https://ununu.io/collaborate/${projectHash}/clone
 
 Their message:
 
-Hi Stefan,
-This is the new track I talked to you about. Would love to hear some vocals on it! Add some ideas if you have some.
-Cheers,
-Shresth.`.replace(/\n/g, '<br>');
+${message}`.replace(/\n/g, '<br>');
 
   const mailOptions = {
     from: '"Ink Collaborator" <matters@ununu.io>',
