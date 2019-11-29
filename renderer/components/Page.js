@@ -1,5 +1,5 @@
 import React from 'react';
-import { createGlobalStyle } from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 import BootstrapProvider from '@bootstrap-styled/provider/lib/BootstrapProvider';
 import theme from '../layout/theme';
 
@@ -9,10 +9,17 @@ const GlobalStyle = createGlobalStyle`
     min-height: 100%;
     margin: 0;
   }
-  
+
   body {
-    background: #000;
+    background: #181818;
   }
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-flow: column;
+  min-width: 100vw;
+  min-height: 100vh;
 `;
 
 export default function Page({ children }) {
@@ -20,7 +27,9 @@ export default function Page({ children }) {
     <React.Fragment>
       <GlobalStyle />
 
-      <BootstrapProvider theme={theme}>{children}</BootstrapProvider>
+      <BootstrapProvider theme={theme}>
+        <Wrapper>{children}</Wrapper>
+      </BootstrapProvider>
     </React.Fragment>
   );
 }
