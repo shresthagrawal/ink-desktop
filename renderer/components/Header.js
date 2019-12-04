@@ -58,11 +58,12 @@ const UserImage = styled.div`
 `;
 
 export default function Header({ user, project }) {
+  const href = user && user.email ? '/home' : '/login';
   // TODO if project, add Download, Upload, Branch, Settings icon to UserHeading
   return (
     <Container>
-      <Link href="/home">
-        <HomeLink href="/home">
+      <Link href={href}>
+        <HomeLink href={href}>
           <LogoWrapper>
             <Logo width={80} />
           </LogoWrapper>

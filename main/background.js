@@ -8,6 +8,7 @@ import * as userStore from './lib/store/user-store';
 
 const isProd = process.env.NODE_ENV === 'production';
 const homeUrl = isProd ? 'app://./home.html' : 'http://localhost:8888/home';
+const loginUrl = isProd ? 'app://./login.html' : 'http://localhost:8888/login';
 
 if (isProd) {
   serve({ directory: 'app' });
@@ -25,7 +26,14 @@ async function main() {
     minWidth: 1000,
     minHeight: 600,
   });
-  mainWindow.loadURL(homeUrl);
+  
+  const user = userStore.get();
+  console.log("user", user)
+  if (user && user.email) {
+    mainWindow.loadURL(homeUrl);
+  } else {
+    mainWindow.loadURL(loginUrl);
+  }
   if (!isProd) {
     mainWindow.webContents.openDevTools();
   }
