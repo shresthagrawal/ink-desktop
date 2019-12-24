@@ -2,9 +2,10 @@ import fs from 'fs';
 import { join as pathJoin } from 'path';
 
 export class InkFile {
-  constructor(name, path, tracks = []) {
+  constructor(name, path, remoteUrl, tracks=[]) {
     this.name = name;
     this.path = path;
+    this.remoteUrl = remoteUrl;
     this.tracks = tracks;
   }
 
@@ -17,8 +18,8 @@ export class InkFile {
 }
 export var defaultInkFile;
 
-export function initInkFile(name, path) {
-  let inkFile = new InkFile(name, path);
+export function initInkFile(name, path, remoteUrl) {
+  let inkFile = new InkFile(name, path, remoteUrl);
   inkFile.save();
   defaultInkFile = inkFile;
 }

@@ -72,3 +72,13 @@ export async function gitCommit(projectPath, commitMessage, userEmail) {
     return;
   }
 }
+
+export async function gitAddRemote(projectPath, remoteName, remoteUrl) {
+  try {
+    const repo = await Git.Repository.open(`${projectPath}/.git`);
+    return await Git.Remote.create(repo, remoteName, remoteUrl);
+  } catch (err) {
+    console.error(err);
+    throw Error(err);
+  }
+}

@@ -15,6 +15,7 @@
     "@bootstrap-styled/provider": "^1.5.3",
     "@bootstrap-styled/v4": "^3.3.0",
     "@ibm/plex": "^2.0.0",
+    "@octokit/rest": "16.35.2",
     "@zeit/next-css": "^1.0.1",
     "ableton-parser": "1.0.0",
     "babel-plugin-styled-components": "^1.10.6",
