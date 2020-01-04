@@ -82,3 +82,48 @@ export async function gitAddRemote(projectPath, remoteName, remoteUrl) {
     throw Error(err);
   }
 }
+
+export async function gitPush(projectPath, remoteName, localBranch, remoteBranch) {
+  console.log("Git Push Called");
+  const repo = await Git.Repository.open(`${projectPath}/.git`);
+  const remote = await repo.getRemote(remoteName);
+  return await remote.push(
+    [`refs/heads/${localBranch}:refs/heads/${remoteBranch}`],
+    {
+      callbacks: {
+          credentials: function(url, userName) {
+              console.log("Credentials Requesting", url, userName);
+              return Git.Cred.userpassPlaintextNew(process.env.GITHUB_USER, process.env.GITHUB_PASS);
+          }
+      }
+  });
+}
+
+export async function gitFetch(projectPath) {
+  console.log("Git Fetch Called");
+  const repo = await Git.Repository.open(`${projectPath}/.git`);
+  return await repo.fetchAll(
+    {
+      callbacks: {
+          credentials: function(url, userName) {
+              console.log("Credentials Requesting", url, userName);
+              return Git.Cred.userpassPlaintextNew(process.env.GITHUB_USER, process.env.GITHUB_PASS);
+          },
+          certificateCheck: function() {
+            return 0;
+          }
+      }
+  });
+}
+
+export async function gitMerge(projectPath, branch, mergeBranch) {
+  console.log("Git Merge Called");
+  const repo = await Git.Repository.open(`${projectPath}/.git`);
+  return await repo.mergeBranches(branch, mergeBranch);
+}
+
+export async function gitPull(projectPath, remoteName, localBranch, remoteBranch) {
+  console.log("Git Pull Called");
+  await gitFetch(projectPath);
+  await gitMerge(projectPath, localBranch, `${remoteName}/${remoteBranch}`);
+}
