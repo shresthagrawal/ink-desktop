@@ -1,4 +1,3 @@
-import { ipcRenderer as ipc } from 'electron-better-ipc';
 import React, { useCallback } from 'react';
 import { withRouter } from 'next/router';
 import Head from 'next/head';
@@ -10,7 +9,8 @@ import {
   Jumbotron,
   Form,
   FormGroup,
-  Label, Container,
+  Label,
+  Container,
 } from '@bootstrap-styled/v4';
 import { complementarySecondary } from '../layout/colors';
 import useUser from '../effects/useUser';
@@ -18,6 +18,7 @@ import Page from '../components/Page';
 import Header from '../components/Header';
 import Input from '../components/Input';
 import useInput from '../effects/useInput';
+import requestFromWorker from '../lib/requestFromWorker';
 
 const FlexContainer = styled(Container)`
   display: flex;
@@ -47,7 +48,7 @@ const Login = ({ router }) => {
       }
 
       // TODO call API once platform in place
-      const user = await ipc.callMain('set-user', { email, password });
+      const user = await requestFromWorker('set-user', { email, password });
       setUser(user);
 
       router.push('/home');
@@ -61,31 +62,31 @@ const Login = ({ router }) => {
         <title>ununu • Ink</title>
       </Head>
       <Header user={user} />
-        <Jumbotron className="py-3">
-          <Form onSubmit={handleSubmit}>
-            <FormGroup>
-              <Label>Email</Label>
-              <Input
-                required
-                type="email"
-                placeholder="Enter email"
-                {...bindEmail}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label>Password</Label>
-              <Input
-                required
-                type="password"
-                placeholder="Enter password"
-                {...bindPassword}
-              />
-            </FormGroup>
-            <Button className="mr-2" type="submit">
-              Login
-            </Button>
-          </Form>
-        </Jumbotron>
+      <Jumbotron className="py-3">
+        <Form onSubmit={handleSubmit}>
+          <FormGroup>
+            <Label>Email</Label>
+            <Input
+              required
+              type="email"
+              placeholder="Enter email"
+              {...bindEmail}
+            />
+          </FormGroup>
+          <FormGroup>
+            <Label>Password</Label>
+            <Input
+              required
+              type="password"
+              placeholder="Enter password"
+              {...bindPassword}
+            />
+          </FormGroup>
+          <Button className="mr-2" type="submit">
+            Login
+          </Button>
+        </Form>
+      </Jumbotron>
     </Page>
   );
 };

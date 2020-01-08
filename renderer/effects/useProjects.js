@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { ipcRenderer as ipc } from 'electron-better-ipc';
+import requestFromWorker from '../lib/requestFromWorker';
 
 export default function useProjects() {
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
     async function fetchProjects() {
-      const projects = await ipc.callMain('fetch-projects');
+      const projects = await requestFromWorker('fetch-projects');
       setProjects(projects);
     }
 
