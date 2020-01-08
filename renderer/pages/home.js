@@ -1,5 +1,4 @@
 import { remote } from 'electron';
-import { ipcRenderer as ipc } from 'electron-better-ipc';
 import React, { useCallback } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -23,6 +22,7 @@ import Panel from '../components/Panel';
 import Input from '../components/Input';
 import useInput from '../effects/useInput';
 import fetch from 'isomorphic-unfetch';
+import requestFromWorker from '../lib/requestFromWorker';
 
 const FlexContainer = styled(Container)`
   display: flex;
@@ -66,7 +66,7 @@ const Home = () => {
       }
 
       // TODO call API once platform in place
-      const user = await ipc.callMain('set-user', { email, password });
+      const user = await requestFromWorker('set-user', { email, password });
       setUser(user);
     },
     [email, password]
@@ -82,12 +82,12 @@ const Home = () => {
     }
 
     const projectPath = filePaths[0];
-    const projects = await ipc.callMain('add-project', projectPath);
+    const projects = await requestFromWorker('add-project', projectPath);
     setProjects(projects);
   }, []);
 
   const handleResetProjects = useCallback(async () => {
-    const projects = await ipc.callMain('reset-projects');
+    const projects = await requestFromWorker('reset-projects');
     setProjects(projects);
   }, []);
 

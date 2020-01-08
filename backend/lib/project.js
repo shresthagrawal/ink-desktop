@@ -1,11 +1,11 @@
 import { basename } from 'path';
 import uuid from 'uuid/v4';
 import Git from 'nodegit';
-import * as projectStore from './store/project-store';
+import * as projectStore from './project-store';
 import { gitCheckAndInit, gitStatus, gitCommit } from './git/utils';
-import { initInkFile, loadInkFile, applyDiff } from './ink-file/ink-file';
+import { initInkFile, loadInkFile, applyDiff } from './ink-file';
 import { getGraph } from './git/graph';
-import { getParsedDiff } from './parser/parser';
+import { getParsedDiff } from './parser';
 
 export async function initProject(path) {
   // Check if the project is Unique and doesnt already exsist.

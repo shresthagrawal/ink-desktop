@@ -1,5 +1,5 @@
 import { createTransport } from 'nodemailer';
-import * as userStore from '../store/user-store';
+import * as userStore from '../../backend/lib/user-store';
 
 export async function inviteCollaborators(
   collaborators,

@@ -5,8 +5,8 @@ const objectName = 'projects';
 const defaultValue = [];
 let projectStore;
 
-export function init() {
-  projectStore = new Store(defaultDoc, objectName, defaultValue);
+export function init(dataDir) {
+  projectStore = new Store(dataDir, defaultDoc, objectName, defaultValue);
   return projectStore;
 }
 

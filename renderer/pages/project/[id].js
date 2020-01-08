@@ -1,8 +1,7 @@
 import React, { useCallback } from 'react';
-import { ipcRenderer as ipc } from 'electron-better-ipc';
 import styled from 'styled-components';
 import slugify from 'slugify';
-import { inviteCollaborators } from '../../../main/lib/utils/mail';
+import {inviteCollaborators} from '../../lib/mail';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import {
@@ -38,6 +37,7 @@ import { animated } from 'react-spring';
 import useFade from '../../effects/useFade';
 import { initialMockCommits, trackEmoji } from '../../mocks';
 import ActivityIcon from '../../components/ActivityIcon';
+import requestFromWorker from '../../lib/requestFromWorker';
 
 const FlexContainer = styled(Container)`
   display: flex;
@@ -156,7 +156,7 @@ export default function Repo() {
         event.stopPropagation();
       }
       const projectPath = project.path;
-      await ipc.callMain('commit-project', { projectPath, commitMessage });
+      await requestFromWorker('commit-project', { projectPath, commitMessage });
 
       resetCommitMessage();
       setCommitSigned(true);

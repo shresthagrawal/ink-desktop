@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ipcRenderer as ipc } from 'electron-better-ipc';
+import requestFromWorker from '../lib/requestFromWorker';
 
 export default function useUser() {
   const [user, setUser] = useState([]);
@@ -7,12 +7,11 @@ export default function useUser() {
   useEffect(() => {
     async function fetchUser() {
       try {
-        const user = await ipc.callMain('fetch-user');
+        const user = await requestFromWorker('fetch-user');
         setUser(user);
-      } catch(e) {
-        console.log(e)
+      } catch (e) {
+        console.log(e);
       }
-
     }
 
     fetchUser();
