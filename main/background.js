@@ -1,76 +1,56 @@
-import { app } from 'electron';
-import serve from 'electron-serve';
-import { ipcMain as ipc } from 'electron-better-ipc';
-import { createWindow, exitOnChange } from './helpers';
-import { getProjectState, commitProject, addProject } from './lib/project';
-import * as projectStore from './lib/store/project-store';
-import * as userStore from './lib/store/user-store';
-import { gitPush, gitPull } from './lib/git/utils';
-import dotenv from 'dotenv'
+import { fork } from 'child_process';
+import createDebug from 'debug';
+import * as projectStore from '../lib/project-store';
+import * as userStore from '../lib/user-store';
+import dotenv from 'dotenv';
 
-dotenv.config()
+dotenv.config();
 
-const isProd = process.env.NODE_ENV === 'production';
-const homeUrl = isProd ? 'app://./home.html' : 'http://localhost:8888/home';
+if (process.argv[2] === '--backend') {
+  createDebug.enable('backend*');
+  const debug = createDebug('backend');
+  debug('Backend worker initializing');
+  const { handleRequest } = require('../backend/handlers');
 
-if (isProd) {
-  serve({ directory: 'app' });
+  const processMessages = () =>
+    process.on('message', async ({ id, event, data }) => {
+      process.send({
+        id,
+        response: await handleRequest(event, data),
+      });
+    });
+
+  const handleInit = ({ event, dataDir }) => {
+    if (event === 'init') {
+      process.removeListener('message', handleInit);
+
+      projectStore.init(dataDir);
+      userStore.init(dataDir);
+
+      processMessages();
+      process.send('ready');
+    } else {
+      console.error('Invalid message received, expected `init` event.');
+    }
+  };
+
+  process.on('message', handleInit);
+  process.on('exit', () => debug('Background worker shutting down'));
 } else {
-  exitOnChange();
-  app.setPath('userData', `${app.getPath('userData')} (development)`);
-}
+  const { app } = require('electron');
+  const { startApp } = require('./app');
 
-async function main() {
-  projectStore.init();
-  userStore.init();
-  const mainWindow = createWindow('main', {
-    width: 1000,
-    height: 600,
-    minWidth: 1000,
-    minHeight: 600,
+  const handleReady = message => {
+    if (message === 'ready') {
+      workerProcess.removeListener('message', handleReady);
+      startApp(workerProcess);
+    }
+  };
+
+  const workerProcess = fork(__filename, ['--backend']);
+  workerProcess.on('message', handleReady);
+  workerProcess.send({
+    event: 'init',
+    dataDir: app.getPath('userData'),
   });
-  mainWindow.loadURL(homeUrl);
-  if (!isProd) {
-    mainWindow.webContents.openDevTools();
-  }
 }
-
-app.on('ready', main);
-
-app.on('window-all-closed', () => {
-  app.quit();
-});
-
-ipc.answerRenderer('fetch-user', () => userStore.get());
-
-ipc.answerRenderer('set-user', ({ email }) => {
-  const user = new userStore.User(email);
-  return userStore.set(user);
-});
-
-ipc.answerRenderer('fetch-projects', () => projectStore.list());
-
-ipc.answerRenderer('reset-projects', () => projectStore.reset());
-
-ipc.answerRenderer(
-  'add-project',
-  async projectPath => await addProject(projectPath)
-);
-
-ipc.answerRenderer(
-  'get-project-state',
-  async projectPath => await getProjectState(projectPath)
-);
-
-ipc.answerRenderer('commit-project', async ({ projectPath, commitMessage }) => {
-  const user = userStore.get();
-  return await commitProject(projectPath, commitMessage, user.email);
-});
-
-ipc.answerRenderer('push-project', async ({ projectPath }) => {
-  return await gitPush(projectPath, 'origin', 'master', 'master');
-});
-
-ipc.answerRenderer('pull-project', async ({ projectPath }) => {
-  return await gitPull(projectPath, 'origin', 'master', 'master');
-});
