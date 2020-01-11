@@ -7,7 +7,7 @@ require('dotenv').config({
   path: path.join(__dirname, '..', '.env'),
 });
 
-const requiredArgs = ['SENDGRID_TOKEN'];
+const requiredArgs = ['SENDGRID_TOKEN', 'GITHUB_TOKEN', 'GITHUB_USER'];
 if (requiredArgs.some(arg => !process.env[arg])) {
   console.error(`Not all required environment variables have been specified.
 Please inspect \`.env.example\`. Required are:

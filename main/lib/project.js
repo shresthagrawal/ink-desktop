@@ -6,7 +6,7 @@ import { gitCheckAndInit, gitStatus, gitCommit, gitAddRemote } from './git/utils
 import { initInkFile, loadInkFile, applyDiff } from './ink-file/ink-file';
 import { getGraph } from './git/graph';
 import { getParsedDiff } from './parser/parser';
-import { gitServer } from './git-server/git-server';
+import { GitServer } from './git-server/git-server';
 
 export async function initProject(path) {
   // Check if the project is Unique and doesnt already exsist.
@@ -18,6 +18,7 @@ export async function initProject(path) {
   // Check if git is already initialized, if not then do it.
   await gitCheckAndInit(path);
   // TODO: Handle the case where the projects have same name.
+  let gitServer = new GitServer();
   let remoteUrl = await gitServer.createRepo(name);
   gitAddRemote(path, 'origin', remoteUrl);
   initInkFile(name, path, remoteUrl);

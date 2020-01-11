@@ -1,7 +1,5 @@
 import * as Octokit from "@octokit/rest";
 
-export let gitServer;
-
 export class GitServer {
   constructor() {
     this.octokit = Octokit({
@@ -36,9 +34,4 @@ export class GitServer {
     if(res.status < 200 && res.status >= 300) throw Error("Error Delting the Repository");
     return true;
   }
-}
-
-export function init() {
-  gitServer = new GitServer();
-  return gitServer;
 }

@@ -5,9 +5,7 @@ import { createWindow, exitOnChange } from './helpers';
 import { getProjectState, commitProject, addProject } from './lib/project';
 import * as projectStore from './lib/store/project-store';
 import * as userStore from './lib/store/user-store';
-import * as gitServer from './lib/git-server/git-server';
 import { gitPush, gitPull } from './lib/git/utils';
-import dotenv from 'dotenv'
 
 const isProd = process.env.NODE_ENV === 'production';
 const homeUrl = isProd ? 'app://./home.html' : 'http://localhost:8888/home';
@@ -20,10 +18,8 @@ if (isProd) {
 }
 
 async function main() {
-  dotenv.config();
   projectStore.init();
   userStore.init();
-  gitServer.init();
   const mainWindow = createWindow('main', {
     width: 1000,
     height: 600,
