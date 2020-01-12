@@ -5,6 +5,10 @@ import { createWindow, exitOnChange } from './helpers';
 import { getProjectState, commitProject, addProject } from './lib/project';
 import * as projectStore from './lib/store/project-store';
 import * as userStore from './lib/store/user-store';
+import { gitPush, gitPull } from './lib/git/utils';
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 const isProd = process.env.NODE_ENV === 'production';
 const homeUrl = isProd ? 'app://./home.html' : 'http://localhost:8888/home';
@@ -61,4 +65,12 @@ ipc.answerRenderer(
 ipc.answerRenderer('commit-project', async ({ projectPath, commitMessage }) => {
   const user = userStore.get();
   return await commitProject(projectPath, commitMessage, user.email);
+});
+
+ipc.answerRenderer('push-project', async ({ projectPath }) => {
+  return await gitPush(projectPath, 'origin', 'master', 'master');
+});
+
+ipc.answerRenderer('pull-project', async ({ projectPath }) => {
+  return await gitPull(projectPath, 'origin', 'master', 'master');
 });

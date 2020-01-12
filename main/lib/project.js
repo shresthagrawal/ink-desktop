@@ -2,10 +2,11 @@ import { basename } from 'path';
 import uuid from 'uuid/v4';
 import Git from 'nodegit';
 import * as projectStore from './store/project-store';
-import { gitCheckAndInit, gitStatus, gitCommit } from './git/utils';
+import { gitCheckAndInit, gitStatus, gitCommit, gitAddRemote } from './git/utils';
 import { initInkFile, loadInkFile, applyDiff } from './ink-file/ink-file';
 import { getGraph } from './git/graph';
 import { getParsedDiff } from './parser/parser';
+import { GitServer } from './git-server/git-server';
 
 export async function initProject(path) {
   // Check if the project is Unique and doesnt already exsist.
@@ -16,7 +17,11 @@ export async function initProject(path) {
   let name = basename(path);
   // Check if git is already initialized, if not then do it.
   await gitCheckAndInit(path);
-  initInkFile(name, path);
+  // TODO: Handle the case where the projects have same name.
+  let gitServer = new GitServer();
+  let remoteUrl = await gitServer.createRepo(name);
+  gitAddRemote(path, 'origin', remoteUrl);
+  initInkFile(name, path, remoteUrl);
   return new projectStore.Project(uuid(), name, path, 'ableton-project');
 }
 

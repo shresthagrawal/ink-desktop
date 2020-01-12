@@ -165,6 +165,25 @@ export default function Repo() {
     [project, commitMessage]
   );
 
+  const handlePush = useCallback(
+    async event => {
+      event.preventDefault();
+      const projectPath = project.path;
+      await ipc.callMain('push-project', { projectPath });
+    },
+    [project]
+  );
+
+  const handlePull = useCallback(
+    async event => {
+      event.preventDefault();
+      const projectPath = project.path;
+      await ipc.callMain('pull-project', { projectPath });
+      await reloadProjectState();
+    },
+    [project]
+  );
+
   const handleInvite = useCallback(async event => {
     event.preventDefault();
 
@@ -275,6 +294,18 @@ export default function Repo() {
                   type="submit"
                 >
                   Sign
+                </Button>
+                <Button
+                  className="mr-2"
+                  onClick={handlePush}
+                >
+                  Push
+                </Button>
+                <Button
+                  className="mr-2"
+                  onClick={handlePull}
+                >
+                  Pull
                 </Button>
                 {commitSignedTransitions.map(
                   ({ item, key, props }) =>
