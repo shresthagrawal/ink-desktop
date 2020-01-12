@@ -6,6 +6,9 @@ import { getProjectState, commitProject, addProject } from './lib/project';
 import * as projectStore from './lib/store/project-store';
 import * as userStore from './lib/store/user-store';
 import { gitPush, gitPull } from './lib/git/utils';
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 const isProd = process.env.NODE_ENV === 'production';
 const homeUrl = isProd ? 'app://./home.html' : 'http://localhost:8888/home';
