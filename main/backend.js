@@ -2,6 +2,7 @@ import createDebug from 'debug';
 import * as projectStore from '../lib/project-store';
 import * as userStore from '../lib/user-store';
 import { handleRequest } from '../backend/handlers';
+import { setConfig } from '../lib/config';
 
 export function initBackend() {
   createDebug.enable('backend*');
@@ -19,9 +20,12 @@ export function initBackend() {
   const handleInit = ({ event, dataDir }) => {
     if (event === 'init') {
       process.removeListener('message', handleInit);
+      setConfig({
+        dataDir,
+      });
 
-      projectStore.init(dataDir);
-      userStore.init(dataDir);
+      projectStore.init();
+      userStore.init();
 
       processMessages();
       process.send('ready');
