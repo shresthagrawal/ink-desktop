@@ -3,6 +3,7 @@ import serve from 'electron-serve';
 import { ipcMain as ipc } from 'electron-better-ipc';
 import uuid from 'uuid/v1';
 import { createWindow, exitOnChange } from './helpers';
+import forkBackend from './helpers/fork-backend';
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -27,33 +28,35 @@ async function sendRequest(workerProcess, event, data) {
   });
 }
 
-export async function startApp(workerProcess) {
-  const delayedStart = async () => {
-    const mainWindow = createWindow('main', {
-      width: 1000,
-      height: 600,
-      minWidth: 1000,
-      minHeight: 600,
-    });
+async function handleAppReady(workerProcess) {
+  const mainWindow = createWindow('main', {
+    width: 1000,
+    height: 600,
+    minWidth: 1000,
+    minHeight: 600,
+  });
 
-    if (!isProd) {
-      const port = process.argv[2];
-      await mainWindow.loadURL(`http://localhost:${port}/home`);
-      mainWindow.webContents.openDevTools();
-    } else {
-      await mainWindow.loadURL(`app://./index.html`);
-    }
+  if (!isProd) {
+    const port = process.argv[2];
+    await mainWindow.loadURL(`http://localhost:${port}/home`);
+    mainWindow.webContents.openDevTools();
+  } else {
+    await mainWindow.loadURL(`app://./index.html`);
+  }
 
-    ipc.answerRenderer(
-      'to-worker',
-      async ({ event, data }) => await sendRequest(workerProcess, event, data)
-    );
-  };
+  ipc.answerRenderer(
+    'to-worker',
+    async ({ event, data }) => await sendRequest(workerProcess, event, data)
+  );
+}
+
+export async function initApp() {
+  const workerProcess = await forkBackend();
 
   if (app.isReady()) {
-    delayedStart();
+    await handleAppReady(workerProcess);
   } else {
-    app.on('ready', delayedStart);
+    app.on('ready', () => handleAppReady(workerProcess));
   }
   app.on('window-all-closed', () => {
     app.quit();
