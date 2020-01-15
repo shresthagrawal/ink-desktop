@@ -29,6 +29,11 @@ async function sendRequest(workerProcess, event, data) {
 }
 
 async function handleAppReady(workerProcess) {
+  ipc.answerRenderer(
+    'to-worker',
+    async ({ event, data }) => await sendRequest(workerProcess, event, data)
+  );
+
   const mainWindow = createWindow('main', {
     width: 1000,
     height: 600,
@@ -43,11 +48,6 @@ async function handleAppReady(workerProcess) {
   } else {
     await mainWindow.loadURL(`app://./index.html`);
   }
-
-  ipc.answerRenderer(
-    'to-worker',
-    async ({ event, data }) => await sendRequest(workerProcess, event, data)
-  );
 }
 
 export async function initApp() {
