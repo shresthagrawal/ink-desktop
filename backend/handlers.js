@@ -1,6 +1,7 @@
 import * as userStore from '../lib/user-store';
 import * as projectStore from '../lib/project-store';
 import { addProject, commitProject, getProjectState } from '../lib/project';
+import { gitPush, gitPull } from '../lib/git/utils';
 
 const handlers = new Map();
 function registerHandler(event, handler) {
