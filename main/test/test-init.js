@@ -13,10 +13,9 @@ const expect = chai.expect;
 const resDir = "./main/test/res";
 // Tmp directory created as an exact copy of the res directory before test
 const tmpDir = "./main/test/tmp";
-const projectA = "project/a.als";
 const inkJson = {
   "name": "A",
-  "path": "/Users/shresthagrawal/Desktop/work/GitMusic/ink-electron/main/test/tmp/project",
+  "path": "./main/test/tmp/project",
   "remoteUrl": "",
   "tracks": []
 } 
@@ -28,10 +27,9 @@ describe('Init', function() {
             // This is important as the parser modifies the origional file.
             copySync(resDir, tmpDir);
         });
-        it('test', async function() {
-            let projectDir = path.parse(path.resolve(tmpDir, projectA)).dir;
-            initInkFile('A', projectDir, '');
-            let inkRaw = readFileSync(path.join(projectDir, 'ink.json'));
+        it('Create Ink file when Path of the project is given', async function() {
+            initInkFile('A', "./main/test/tmp/project", '');
+            let inkRaw = readFileSync("./main/test/tmp/project/ink.json");
             JSON.parse(inkRaw).should.eql(inkJson);
         });
         after(function() {
