@@ -9,6 +9,7 @@ cache:
 script:
 - npm run-script coverage
 - npm run-script report-coverage
+install: npm install
 before_deploy:
 - echo -e 'SENDGRID_TOKEN=random_value' >> .env
 - echo -e 'GITHUB_USER=random_value' >> .env
