@@ -7,12 +7,14 @@ cache:
 script:
 - npm run-script coverage
 - npm run-script report-coverage
+before_deploy:
+- npm run build
 deploy:
   provider: releases
-  before_deploy:
-    script: npm run build
-  api_key:
+  token:
     secure: TkXWhF+4oZKK2dinXlVr0NGyKxc4ZtE5VbnywwL2rgnmwA8Axt+dUTKKjw+u1k/IjF6eBLlUHxGZ/9SHTbebcqBzy4XNuIvc645TMxBUy8OtkdC472XcQ6Dp1I+DhfZb5bbsH+GUeFavEnhPL4YCPUlYqROb3Z1pSfDt0/iLdgJb2EYbJenE7e3Sn4VGpncHqpEF2B5e+y9BPqOyj/9ofLQ/ykDPNayB9aDYQEwqTpuQSz+zvkxi32sIezSVLIV24F8eQlI3vhrckijIuJvgKsCHPXQgeJ/+Q9ROZYesZO98J2FN7iuzwL0fLR0UgadHuZ3FTivAI/WTTtGPVIC+uOP408jwSiJjIx9rcJlIyel4nuVEzO32L5qpuDEC6nqQSXXsbeGeMIK1tHJSMN9UVXUhQyAjc/4EgCS5kJK0M0n08Y2pmIn44g0UnYNgNTc94qYhqKh+qIrZVegNb3WMDmN9kExUO3puEWtgEM5+dZYDKO9mZ7g82BKzlt+llIJIWxYyFxiOqHKQH7GQJMw1c9YK8r4C/e7Ud3KLLiwJi5fq73oZutf/jfU0AGicqd8xk3uSaM5cSSJR9ciDs8IaqR+CwRu+xaQ7PkeVblwT55889FXnZ5p+PYMMvbNFFtgPz9PYN4y6VA8TSvR1sHSv7MUaVk4/j2/SYnVAYO/3iKc=
   file: dist/*
   draft: true
-  skip_cleanup: true
+  cleanup: false
+  on:
+    branch: master
