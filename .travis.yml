@@ -21,7 +21,7 @@ deploy:
   overwrite: true
   file_glob: true
   file: dist/ununu*
-  draft: true
-  cleanup: false
+  tags: true
+  skip_cleanup: true
   on:
     branch: master
