@@ -8,6 +8,9 @@ script:
 - npm run-script coverage
 - npm run-script report-coverage
 before_deploy:
+- echo -e 'SENDGRID_TOKEN=random_value' >> .env
+- echo -e 'GITHUB_USER=random_value' >> .env
+- echo -e 'GITHUB_TOKEN=random_value' >> .env
 - npm run build
 deploy:
   provider: releases
