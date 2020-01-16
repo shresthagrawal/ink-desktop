@@ -1,3 +1,5 @@
+os:
+- osx
 language: node_js
 node_js:
 - stable
@@ -11,11 +13,13 @@ before_deploy:
 - echo -e 'SENDGRID_TOKEN=random_value' >> .env
 - echo -e 'GITHUB_USER=random_value' >> .env
 - echo -e 'GITHUB_TOKEN=random_value' >> .env
-- npm run build
+- npm run-script build:all
+- zip
 deploy:
   provider: releases
   token: '$GITHUB_TOKEN'
-  file: dist/*
+  file_glob: true
+  file: dist/ununu*
   draft: true
   cleanup: false
   on:
