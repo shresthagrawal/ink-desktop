@@ -9,31 +9,23 @@ export function initBackend() {
   const debug = createDebug('backend');
   debug('Backend worker initializing');
 
-  const processMessages = () =>
-    process.on('message', async ({ id, event, data }) => {
+  const handleEvent = async ({ id, event, data }) => {
+    if (event === 'init') {
+      setConfig(data);
+      projectStore.init();
+      userStore.init();
+      process.send({
+        id,
+        response: 'ready'
+      });
+    } else {
       process.send({
         id,
         response: await handleRequest(event, data),
       });
-    });
-
-  const handleInit = ({ event, dataDir }) => {
-    if (event === 'init') {
-      process.removeListener('message', handleInit);
-      setConfig({
-        dataDir,
-      });
-
-      projectStore.init();
-      userStore.init();
-
-      processMessages();
-      process.send('ready');
-    } else {
-      console.error('Invalid message received, expected `init` event.');
     }
   };
 
-  process.on('message', handleInit);
+  process.on('message', handleEvent);
   process.on('exit', () => debug('Background worker shutting down'));
 }

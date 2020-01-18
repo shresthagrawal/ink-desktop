@@ -52,13 +52,18 @@ async function handleAppReady(workerProcess) {
 
 export async function initApp() {
   const workerProcess = await forkBackend();
-
-  if (app.isReady()) {
-    await handleAppReady(workerProcess);
-  } else {
-    app.on('ready', () => handleAppReady(workerProcess));
+  let data = {
+      dataDir: app.getPath('userData'),
+  };
+  let initMessage =  await sendRequest(workerProcess, 'init', data);
+  if (initMessage === 'ready') {
+    if (app.isReady()) {
+      await handleAppReady(workerProcess);
+    } else {
+      app.on('ready', () => handleAppReady(workerProcess));
+    }
+    app.on('window-all-closed', () => {
+      app.quit();
+    });
   }
-  app.on('window-all-closed', () => {
-    app.quit();
-  });
 }
