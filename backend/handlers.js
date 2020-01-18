@@ -1,5 +1,5 @@
-import * as userStore from '../lib/user-store';
-import * as projectStore from '../lib/project-store';
+import * as userStore from '../lib/store/user-store';
+import * as projectStore from '../lib/store/project-store';
 import { addProject, commitProject, getProjectState } from '../lib/project';
 import { gitPush, gitPull } from '../lib/git/utils';
 
@@ -8,7 +8,6 @@ function registerHandler(event, handler) {
   handlers.set(event, handler);
 }
 export async function handleRequest(event, data) {
-  console.log('REQUEST', event, data);
   if (handlers.has(event) && typeof handlers.get(event) === 'function') {
     return handlers.get(event)(data);
   }

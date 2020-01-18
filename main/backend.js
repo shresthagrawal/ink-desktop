@@ -1,6 +1,6 @@
 import createDebug from 'debug';
-import * as projectStore from '../lib/project-store';
-import * as userStore from '../lib/user-store';
+import * as projectStore from '../lib/store/project-store';
+import * as userStore from '../lib/store/user-store';
 import { handleRequest } from '../backend/handlers';
 import { setConfig } from '../lib/config';
 
