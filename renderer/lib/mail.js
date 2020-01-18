@@ -1,13 +1,12 @@
 import { createTransport } from 'nodemailer';
-import * as userStore from '../../lib/user-store';
 
 export async function inviteCollaborators(
   collaborators,
   message,
   projectName,
-  projectHash
+  projectHash,
+  user
 ) {
-  userStore.init();
   collaborators = !Array.isArray(collaborators)
     ? [collaborators]
     : collaborators;
@@ -23,7 +22,6 @@ export async function inviteCollaborators(
     },
   });
 
-  const user = userStore.get();
   const body = `${user.email} has invited you to a new session on ununu for their project “${projectName}”.
 Listen here: https://ununu.io/collaborate/${projectHash}
 Start collaborating here: https://ununu.io/collaborate/${projectHash}/clone

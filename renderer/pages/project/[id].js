@@ -194,7 +194,8 @@ export default function Repo() {
       recipients,
       invitationMessage,
       project.name,
-      slugify(project.name)
+      slugify(project.name),
+      user
     );
     setMailSent(true);
   });
