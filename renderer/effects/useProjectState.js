@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ipcRenderer as ipc } from 'electron-better-ipc';
+import requestFromWorker from '../lib/requestFromWorker';
 
 export default function useProjectState(projectPath, interval = null) {
   const [state, setState] = useState({
@@ -10,7 +10,7 @@ export default function useProjectState(projectPath, interval = null) {
 
   const getState = async () => {
     try {
-      const res = await ipc.callMain('get-project-state', projectPath);
+      const res = await requestFromWorker('get-project-state', projectPath);
       setState(res);
     } catch (err) {
       console.error('Bad Error:', err);
