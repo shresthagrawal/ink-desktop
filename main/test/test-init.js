@@ -3,7 +3,7 @@ import chaiAsPromised from "chai-as-promised";
 import { readFileSync } from "fs";
 import path from "path";
 import { copySync, remove } from "fs-extra";
-import { initInkFile } from "../lib/ink-file/ink-file";
+import { initInkFile } from "../../lib/ink-file";
 
 chai.use(chaiAsPromised);
 chai.should();
@@ -18,7 +18,7 @@ const inkJson = {
   "path": "./main/test/tmp/project",
   "remoteUrl": "",
   "tracks": []
-} 
+}
 
 describe('Init', function() {
     describe ('Init Ink File', function() {
