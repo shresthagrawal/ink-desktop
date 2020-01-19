@@ -7,9 +7,13 @@
   "scripts": {
     "dev": "nextron",
     "build": "nextron build",
+    "build:all": "nextron build --all",
     "lint": "eslint",
-    "test": "npm run lint",
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "electron-builder install-app-deps",
+    "test": "mocha -r esm main/test/**/*.js",
+    "testwith": "mocha -r esm main/test/**/*.js --grep",
+    "coverage": "nyc mocha -r esm main/test/**/*.js",
+    "report-coverage": "nyc --reporter=text-lcov mocha -r esm main/test/**/*.js > coverage.lcov && codecov"
   },
   "dependencies": {
     "@bootstrap-styled/provider": "^1.5.3",
@@ -33,16 +37,22 @@
     "uuid": "^3.3.3"
   },
   "devDependencies": {
+    "chai": "4.2.0",
+    "chai-as-promised": "7.1.1",
+    "codecov": "3.6.1",
     "dotenv": "^8.2.0",
     "electron": "^6.1.7",
     "electron-builder": "^21.2.0",
     "eslint": "6.5.1",
     "eslint-config-prettier": "^6.9.0",
+    "esm": "3.2.25",
     "husky": "^3.1.0",
     "isomorphic-unfetch": "^3.0.0",
     "lint-staged": "^9.5.0",
+    "mocha": "7.0.0",
     "next": "^9.1.6",
     "nextron": "^5.14.3",
+    "nyc": "15.0.0",
     "prettier": "^1.19.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0"
