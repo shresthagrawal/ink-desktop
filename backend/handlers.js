@@ -21,6 +21,7 @@ registerHandler('set-user', ({ email }) => {
 });
 
 registerHandler('fetch-projects', () => projectStore.list());
+registerHandler('delete-project', projectPath => projectStore.remove(projectPath));
 registerHandler('reset-projects', () => projectStore.reset());
 registerHandler(
   'add-project',
