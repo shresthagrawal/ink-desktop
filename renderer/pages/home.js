@@ -8,8 +8,6 @@ import {
   Row,
   Col,
   H5,
-  Button,
-  Jumbotron,
   Form,
   FormGroup,
   Label, Container,
@@ -21,16 +19,15 @@ import Page from '../components/Page';
 import Header from '../components/Header';
 import Panel from '../components/Panel';
 import Input from '../components/Input';
+import Text from '../components/Text';
+import Size from '../components/Size';
+import Space from '../components/Space';
+import Position from '../components/Position';
+import Button from '../components/Button';
+import FlexContainer from '../components/FlexContainer';
 import useInput from '../effects/useInput';
 import fetch from 'isomorphic-unfetch';
-
-const FlexContainer = styled(Container)`
-  display: flex;
-  flex-flow: column;
-  flex-grow: 1;
-  min-height: 100%;
-  padding: 0;
-`;
+import loginBg from './login-bg.jpeg';
 
 const TallRow = styled(Row)`
   flex-grow: 1;
@@ -96,10 +93,10 @@ const Home = () => {
       <Head>
         <title>ununu • Ink</title>
       </Head>
-      <Header user={user} />
       <FlexContainer fluid={true}>
         {user && user.email ? (
           <React.Fragment>
+            <Header user={user} />
             <TallRow>
               <Panel md={2} />
               <Col className="bg-info p-3">
@@ -122,12 +119,12 @@ const Home = () => {
                     </Row>
                   ))
                 ) : (
-                  <Row>
-                    <Col md={12}>
-                      <Message>You have no active projects.</Message>
-                    </Col>
-                  </Row>
-                )}
+                    <Row>
+                      <Col md={12}>
+                        <Message>You have no active projects.</Message>
+                      </Col>
+                    </Row>
+                  )}
 
                 <Row>
                   <Col md={12}>
@@ -146,37 +143,69 @@ const Home = () => {
                   </Col>
                 </Row>
               </Col>
-
               <Panel md={3}></Panel>
             </TallRow>
           </React.Fragment>
         ) : (
-          <Jumbotron className="py-3">
-            <Form onSubmit={handleSubmit}>
-              <FormGroup>
-                <Label>Email</Label>
-                <Input
-                  required
-                  type="email"
-                  placeholder="Enter email"
-                  {...bindEmail}
-                />
-              </FormGroup>
-              <FormGroup>
-                <Label>Password</Label>
-                <Input
-                  required
-                  type="password"
-                  placeholder="Enter password"
-                  {...bindPassword}
-                />
-              </FormGroup>
-              <Button className="mr-2" type="submit">
-                Login
-              </Button>
-            </Form>
-          </Jumbotron>
-        )}
+            <FlexContainer
+              fluid={true}
+              justifyContent="center" 
+              alignItems="center"
+              style={{ backgroundImage: `url(${loginBg})`}}
+            >
+              <Size height="60px" width="100%">
+                <Position position="fixed" top="0">
+                  <div style={{background: '#181818'}}>
+                    <FlexContainer fluid={true} justifyContent="center">
+                      <Space padding="20px 14px">
+                        <Text color="#fff" size="16px" weight="900" family="Bowlby One">INK</Text>
+                      </Space>
+                    </FlexContainer>
+                  </div>
+                </Position>
+              </Size>
+              <Text align="center" size="177px" family="Bowlby One">INK</Text>
+              <Space padding="0 0 30px">
+                <Text align="center" color="#fadabc" size="22px">TRUSTED MUSIC COLLABORATION</Text>
+              </Space>
+              <Size width="350px">
+                <div>
+                  <Form onSubmit={handleSubmit}>
+                    <Space padding="0 0 16px">
+                      <FormGroup>
+                        <Input
+                          required
+                          type="email"
+                          placeholder="Email"
+                          size="sm"
+                          {...bindEmail}
+                        />
+                      </FormGroup>
+                    </Space>
+                    <FormGroup>
+                      <Input
+                        required
+                        type="password"
+                        placeholder="Password"
+                        size="sm"
+                        {...bindPassword}
+                      />
+                    </FormGroup>
+                    <Space padding="20px 0">
+                      <div>
+                        <Button 
+                          type="submit"
+                          block
+                        >
+                          Sign Up
+                        </Button>
+                      </div>
+                    </Space>
+                  </Form>
+                </div>
+              </Size>
+            </FlexContainer>
+          )}
       </FlexContainer>
     </Page>
   );

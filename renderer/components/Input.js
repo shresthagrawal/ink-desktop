@@ -3,7 +3,10 @@ import { Input as BootstrapInput} from '@bootstrap-styled/v4';
 
 const Input = styled(BootstrapInput)`
   ${(props) => `
-      height: 34px;
+      height: 45px;
+      box-sizing: border-box;
+      padding: 20px;
+      border-radius: 8px;
   `};
 `;
 

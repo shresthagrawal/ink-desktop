@@ -32,7 +32,12 @@ const inkTheme = makeTheme({
   '$input-border-color': buttonInfo,
   '$input-border-radius': '5px',
   '$input-btn-border-width': '3px',
-  '$input-bg': inputBackground
+  '$input-bg': inputBackground,
+  '$font-size-lg': '1.25rem',
+  '$font-size-md': '1rem',
+  '$font-size-sm': '.88rem',
+  '$font-size-xs': '.75rem',
+  '$font-size-base': '1rem'
 });
 
 export default inkTheme;

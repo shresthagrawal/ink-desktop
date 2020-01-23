@@ -33,19 +33,12 @@ import {
   playerBackground,
 } from '../../layout/colors';
 import HistoryIcon from '../../components/HistoryIcon';
+import FlexContainer from '../../components/FlexContainer';
 import useTemporaryState from '../../effects/useTemporaryState';
 import { animated } from 'react-spring';
 import useFade from '../../effects/useFade';
 import { initialMockCommits, trackEmoji } from '../../mocks';
 import ActivityIcon from '../../components/ActivityIcon';
-
-const FlexContainer = styled(Container)`
-  display: flex;
-  flex-flow: column;
-  flex-grow: 1;
-  min-height: 100%;
-  padding: 0;
-`;
 
 const TallRow = styled(Row)`
   flex-grow: 1;
