@@ -33,11 +33,17 @@ const inkTheme = makeTheme({
   '$input-border-radius': '5px',
   '$input-btn-border-width': '3px',
   '$input-bg': inputBackground,
+  '$input-border-radius-sm': '.5rem',
+  '$input-padding-x-sm': '.875rem',
+  '$input-padding-y-sm': '.875rem',
   '$font-size-lg': '1.25rem',
   '$font-size-md': '1rem',
   '$font-size-sm': '.88rem',
   '$font-size-xs': '.75rem',
-  '$font-size-base': '1rem'
+  '$font-size-base': '1rem',
+  '$btn-padding-x': '.87rem',
+  '$btn-padding-y': '.87rem',
+  '$btn-border-radius': '.5rem'
 });
 
 export default inkTheme;
