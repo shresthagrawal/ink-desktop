@@ -1,7 +1,6 @@
 import styled from 'styled-components';
-import { Container } from '@bootstrap-styled/v4';
 
-const FlexContainer = styled(Container)`
+const FlexContainer = styled.div`
     ${
         props => `
             display: flex;
