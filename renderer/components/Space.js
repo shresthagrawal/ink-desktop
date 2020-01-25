@@ -1,9 +1,9 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 const Space = styled(({children, ...props}) => React.cloneElement(children, props))`
     ${
-        props => `
+        props => css`
             padding: ${props.padding || ''};
             margin: ${props.margin || ''};
         `

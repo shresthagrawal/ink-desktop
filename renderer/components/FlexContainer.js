@@ -1,8 +1,8 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 const FlexContainer = styled.div`
     ${
-        props => `
+        props => css`
             display: flex;
             flex-flow: ${props.flow  || 'column'};
             flex-grow: ${props.grow  || 1};

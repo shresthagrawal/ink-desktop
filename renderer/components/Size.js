@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import React from "react";
 
 const Size = styled(({
@@ -6,7 +6,7 @@ const Size = styled(({
     ...props
 }) => React.cloneElement(children, props))`
     ${
-        props => `
+        props => css`
             min-width: ${props.minWidth || ''};
             width: ${props.width || ''};
             max-width: ${props.maxWidth || ''};

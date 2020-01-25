@@ -1,9 +1,9 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 const Position = styled(({children, ...props}) => React.cloneElement(children, props))`
     ${
-        props => `
+        props => css`
             position: ${props.position || ''};
             top: ${props.top || ''};
             bottom: ${props.bottom || ''};
