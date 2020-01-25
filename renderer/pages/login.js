@@ -68,7 +68,7 @@ const Login = ({ router }) => {
             </div>
           </Position>
         </Size>
-        <Text align="center" size="177px" family="Bowlby One">INK</Text>
+        <Text align="center" size="177px" family="Bowlby One" lineHeight="0.85">INK</Text>
         <Space padding="0 0 30px">
           <Text align="center" color="#fadabc" size="22px">TRUSTED MUSIC COLLABORATION</Text>
         </Space>
