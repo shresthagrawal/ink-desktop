@@ -1,32 +1,22 @@
 import React, { useCallback } from 'react';
 import { withRouter } from 'next/router';
 import Head from 'next/head';
-import Link from 'next/link';
-import { default as styled } from 'styled-components';
 import {
-  Row,
   Button,
-  Jumbotron,
   Form,
   FormGroup,
-  Label,
-  Container,
 } from '@bootstrap-styled/v4';
-import { complementarySecondary } from '../layout/colors';
 import useUser from '../effects/useUser';
 import Page from '../components/Page';
-import Header from '../components/Header';
 import Input from '../components/Input';
+import FlexContainer from '../components/FlexContainer';
+import Space from '../components/Space';
+import Size from '../components/Size';
+import Text from '../components/Text';
+import Position from '../components/Position';
 import useInput from '../effects/useInput';
 import requestFromWorker from '../lib/requestFromWorker';
-
-const FlexContainer = styled(Container)`
-  display: flex;
-  flex-flow: column;
-  flex-grow: 1;
-  min-height: 100%;
-  padding: 0;
-`;
+import loginBg from './login-bg.jpeg';
 
 const Login = ({ router }) => {
   const { user, setUser } = useUser();
@@ -61,32 +51,64 @@ const Login = ({ router }) => {
       <Head>
         <title>ununu • Ink</title>
       </Head>
-      <Header user={user} />
-      <Jumbotron className="py-3">
-        <Form onSubmit={handleSubmit}>
-          <FormGroup>
-            <Label>Email</Label>
-            <Input
-              required
-              type="email"
-              placeholder="Enter email"
-              {...bindEmail}
-            />
-          </FormGroup>
-          <FormGroup>
-            <Label>Password</Label>
-            <Input
-              required
-              type="password"
-              placeholder="Enter password"
-              {...bindPassword}
-            />
-          </FormGroup>
-          <Button className="mr-2" type="submit">
-            Login
-          </Button>
-        </Form>
-      </Jumbotron>
+      <FlexContainer
+        fluid={true}
+        justifyContent="center" 
+        alignItems="center"
+        style={{ backgroundImage: `url(${loginBg})`}}
+      >
+        <Size height="60px" width="100%">
+          <Position position="fixed" top="0">
+            <div style={{background: '#181818'}}>
+              <FlexContainer fluid={true} justifyContent="center">
+                <Space padding="20px 14px">
+                  <Text color="#fff" size="16px" weight="900" family="Bowlby One">INK</Text>
+                </Space>
+              </FlexContainer>
+            </div>
+          </Position>
+        </Size>
+        <Text align="center" size="177px" family="Bowlby One" lineHeight="0.85">INK</Text>
+        <Space padding="0 0 30px">
+          <Text align="center" color="#fadabc" size="22px">TRUSTED MUSIC COLLABORATION</Text>
+        </Space>
+        <Size width="350px">
+          <div>
+            <Form onSubmit={handleSubmit}>
+              <Space padding="0 0 16px">
+                <FormGroup>
+                  <Input
+                    required
+                    type="email"
+                    placeholder="Email"
+                    size="sm"
+                    {...bindEmail}
+                  />
+                </FormGroup>
+              </Space>
+              <FormGroup>
+                <Input
+                  required
+                  type="password"
+                  placeholder="Password"
+                  size="sm"
+                  {...bindPassword}
+                />
+              </FormGroup>
+              <Space padding="20px 0">
+                <div>
+                  <Button 
+                    type="submit"
+                    block
+                  >
+                    Sign Up
+                  </Button>
+                </div>
+              </Space>
+            </Form>
+          </div>
+        </Size>
+      </FlexContainer>
     </Page>
   );
 };

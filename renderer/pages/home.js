@@ -9,20 +9,12 @@ import useProjects from '../effects/useProjects';
 import useUser from '../effects/useUser';
 import Page from '../components/Page';
 import Header from '../components/Header';
+import FlexContainer from '../components/FlexContainer';
 import Panel from '../components/Panel';
 import requestFromWorker from '../lib/requestFromWorker';
 import { useRouter } from 'next/router';
 import Spinner from '../components/Spinner';
 import useTimeout from '../effects/useTimeout';
-
-const FlexContainer = styled(Container)`
-  display: flex;
-  flex-flow: column;
-  flex-grow: 1;
-
-  min-height: 100%;
-  padding: 0;
-`;
 
 const TallRow = styled(Row)`
   flex-grow: 1;
@@ -132,7 +124,6 @@ const Home = () => {
                       </Col>
                     </Row>
                   )}
-
                   <Row>
                     <Col md={12}>
                       <Button className="mr-2" onClick={handleChooseRepository}>
@@ -145,8 +136,8 @@ const Home = () => {
                         Search
                       </Button>
                       {/*<Button className="mr-2" onClick={handleResetProjects}>
-                  Reset Projects
-                </Button>*/}
+                        Reset Projects
+                      </Button>*/}
                     </Col>
                   </Row>
                 </Col>
