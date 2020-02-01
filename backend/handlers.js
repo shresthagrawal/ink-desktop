@@ -46,3 +46,7 @@ registerHandler('pull-project', async ({ projectId }) => {
   await gitPull(project.path, 'origin', 'master', 'master');
   await ParserManager.resetInstance(projectId);
 });
+registerHandler(
+  'clone-project',
+  async ({ remoteURL, projectPath }) => await gitPull(remoteURL, projectPath)
+);
