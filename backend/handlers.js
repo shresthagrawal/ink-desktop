@@ -2,6 +2,7 @@ import * as userStore from '../lib/store/user-store';
 import * as projectStore from '../lib/store/project-store';
 import { addProject, commitProject, getProjectState } from '../lib/project';
 import { gitPush, gitPull } from '../lib/git/utils';
+import { ParserManager } from '../lib/parser';
 
 const handlers = new Map();
 function registerHandler(event, handler) {
@@ -42,6 +43,7 @@ registerHandler(
 );
 registerHandler(
   'pull-project',
-  async ({ projectPath }) =>
-    await gitPull(projectPath, 'origin', 'master', 'master')
-);
+  async ({ projectPath }) => {
+    await gitPull(projectPath, 'origin', 'master', 'master');
+    await ParserManager.resetInstance(projectPath);
+  });
