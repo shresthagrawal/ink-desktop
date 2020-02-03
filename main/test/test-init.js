@@ -15,7 +15,6 @@ const resDir = "./main/test/res";
 const tmpDir = "./main/test/tmp";
 const inkJson = {
   "name": "A",
-  "path": "./main/test/tmp/project",
   "remoteUrl": "",
   "tracks": []
 }
