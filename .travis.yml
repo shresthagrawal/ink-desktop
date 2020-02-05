@@ -8,8 +8,7 @@ cache:
   - node_modules
 script:
 - npm run-script coverage
-- npm run-script report-coverage
-install: npm install
+install: npm install && npm run install-app-deps
 before_deploy:
 - echo -e 'SENDGRID_TOKEN=$SENDGRID_TOKEN' >> .env
 - echo -e 'GITHUB_USER=$GITHUB_USER' >> .env

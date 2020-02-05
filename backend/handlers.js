@@ -1,6 +1,6 @@
 import * as userStore from '../lib/store/user-store';
 import * as projectStore from '../lib/store/project-store';
-import { addProject, commitProject, getProjectState } from '../lib/project';
+import { initProject, commitProject, getProjectState } from '../lib/project';
 import { gitPush, gitPull } from '../lib/git/utils';
 import { ParserManager } from '../lib/parser';
 
@@ -26,7 +26,7 @@ registerHandler('delete-project', projectPath => projectStore.remove(projectPath
 registerHandler('reset-projects', () => projectStore.reset());
 registerHandler(
   'add-project',
-  async projectPath => await addProject(projectPath)
+  async projectPath => await initProject(projectPath)
 );
 registerHandler(
   'get-project-state',
