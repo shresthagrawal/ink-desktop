@@ -10,9 +10,6 @@ chai.use(chaiAsPromised);
 chai.should();
 const { expect } = chai;
 
-const storeData = {
-  foo: '',
-};
 const migrationOne = '0.1.0';
 const migrationTwo = '2.0.1';
 const migrations = {
