@@ -8,7 +8,6 @@ cache:
   - node_modules
 script:
 - npm run-script coverage
-- npm run-script report-coverage
 install: npm install
 before_deploy:
 - echo -e 'SENDGRID_TOKEN=$SENDGRID_TOKEN' >> .env
