@@ -9,7 +9,7 @@
     "build": "nextron build",
     "build:all": "nextron build --all",
     "lint": "eslint",
-    "postinstall": "electron-builder install-app-deps",
+    "install-app-deps": "electron-builder install-app-deps",
     "test": "mocha -r esm main/test/**/*.js",
     "testwith": "mocha -r esm main/test/**/*.js --grep",
     "coverage": "nyc mocha -r esm main/test/**/*.js",
