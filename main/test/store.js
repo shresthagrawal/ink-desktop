@@ -43,7 +43,7 @@ describe('configuration store', function() {
   });
 
   it('should apply no migrations if the store versions is the current', function() {
-    const store = new Store('bar', 'foo', '');
+    const store = new Store('bar', 'foo', '', { validateVersion: false });
     store.internalStore.set('foo', 'a');
     store.internalStore.set('version', '3.0.0');
 
@@ -54,9 +54,10 @@ describe('configuration store', function() {
     });
   });
 
-  it('should apply all migrations if no version has been set', function() {
-    const store = new Store('bar', 'foo', 'foo');
+  it('should apply all migrations if the version is the lowest', function() {
+    const store = new Store('bar', 'foo', 'foo', { validateVersion: false });
     store.internalStore.set('foo', 'a');
+    store.internalStore.set('version', '0.0.0');
 
     validateStoreVersion(store.internalStore, migrations);
     expect(store.internalStore.store).to.deep.equal({
@@ -68,7 +69,7 @@ describe('configuration store', function() {
   });
 
   it('should apply the matching migrations if a particular version has been set', function() {
-    const store = new Store('bar', 'foo', 'foo');
+    const store = new Store('bar', 'foo', 'foo', { validateVersion: false });
     store.internalStore.set('foo', 'a');
     store.internalStore.set('version', '1.0.0');
 

@@ -3,6 +3,7 @@ import * as projectStore from '../lib/store/project-store';
 import { initProject, commitProject, getProjectState } from '../lib/project';
 import { gitPush, gitPull } from '../lib/git/utils';
 import { ParserManager } from '../lib/parser';
+import { getById } from '../lib/store/project-store';
 
 const handlers = new Map();
 function registerHandler(event, handler) {
@@ -22,7 +23,7 @@ registerHandler('set-user', ({ email }) => {
 });
 
 registerHandler('fetch-projects', () => projectStore.list());
-registerHandler('delete-project', projectPath => projectStore.remove(projectPath));
+registerHandler('delete-project', projectId => projectStore.remove(projectId));
 registerHandler('reset-projects', () => projectStore.reset());
 registerHandler(
   'add-project',
@@ -30,20 +31,18 @@ registerHandler(
 );
 registerHandler(
   'get-project-state',
-  async projectPath => await getProjectState(projectPath)
+  async projectId => await getProjectState(projectId)
 );
-registerHandler('commit-project', async ({ projectPath, commitMessage }) => {
+registerHandler('commit-project', async ({ projectId, commitMessage }) => {
   const user = userStore.get();
-  return await commitProject(projectPath, commitMessage, user.email);
+  return await commitProject(projectId, commitMessage, user.email);
 });
-registerHandler(
-  'push-project',
-  async ({ projectPath }) =>
-    await gitPush(projectPath, 'origin', 'master', 'master')
-);
-registerHandler(
-  'pull-project',
-  async ({ projectPath }) => {
-    await gitPull(projectPath, 'origin', 'master', 'master');
-    await ParserManager.resetInstance(projectPath);
-  });
+registerHandler('push-project', async ({ projectId }) => {
+  const project = getById(projectId);
+  await gitPush(project.path, 'origin', 'master', 'master');
+});
+registerHandler('pull-project', async ({ projectId }) => {
+  const project = getById(projectId);
+  await gitPull(project.path, 'origin', 'master', 'master');
+  await ParserManager.resetInstance(projectId);
+});
