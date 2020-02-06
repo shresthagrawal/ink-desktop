@@ -46,7 +46,7 @@ async function handleAppReady(workerProcess) {
     await mainWindow.loadURL(`http://localhost:${port}/home`);
     mainWindow.webContents.openDevTools();
   } else {
-    await mainWindow.loadURL(`app://./index.html`);
+    await mainWindow.loadURL(`app://./home.html`);
   }
 }
 
