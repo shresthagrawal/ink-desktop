@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import requestFromWorker from '../lib/requestFromWorker';
 
-export default function useProjectState(projectPath, interval = null) {
+export default function useProjectState(projectId, interval = null) {
   const [state, setState] = useState({
     status: {},
     graph: [],
@@ -10,7 +10,7 @@ export default function useProjectState(projectPath, interval = null) {
 
   const getState = async () => {
     try {
-      const res = await requestFromWorker('get-project-state', projectPath);
+      const res = await requestFromWorker('get-project-state', projectId);
       setState(res);
     } catch (err) {
       console.error('Bad Error:', err);
@@ -18,7 +18,7 @@ export default function useProjectState(projectPath, interval = null) {
   };
 
   useEffect(() => {
-    if (!projectPath) {
+    if (!projectId) {
       return;
     }
 
@@ -28,7 +28,7 @@ export default function useProjectState(projectPath, interval = null) {
     } else {
       getState();
     }
-  }, [projectPath]);
+  }, [projectId]);
 
   return {
     ...state,

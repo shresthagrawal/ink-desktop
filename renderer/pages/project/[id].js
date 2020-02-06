@@ -119,7 +119,7 @@ export default function Repo() {
   // state is of the following structure:
   // state = { new: Array(), modified: Array(), deleted: Array() }
   const { status, graph, delta, reloadProjectState } = useProjectState(
-    project ? project.path : null
+    project ? project.id : null
   );
 
   const {
@@ -148,8 +148,10 @@ export default function Repo() {
       if (form.checkValidity() === false) {
         event.stopPropagation();
       }
-      const projectPath = project.path;
-      await requestFromWorker('commit-project', { projectPath, commitMessage });
+      await requestFromWorker('commit-project', {
+        projectId: project.id,
+        commitMessage
+      });
 
       resetCommitMessage();
       setCommitSigned(true);
@@ -161,8 +163,9 @@ export default function Repo() {
   const handlePush = useCallback(
     async event => {
       event.preventDefault();
-      const projectPath = project.path;
-      await requestFromWorker('push-project', { projectPath });
+      await requestFromWorker('push-project', {
+        projectId: project.id
+      });
     },
     [project]
   );
@@ -170,8 +173,9 @@ export default function Repo() {
   const handlePull = useCallback(
     async event => {
       event.preventDefault();
-      const projectPath = project.path;
-      await requestFromWorker('pull-project', { projectPath });
+      await requestFromWorker('pull-project', {
+        projectId: project.id
+      });
       await reloadProjectState();
     },
     [project]
