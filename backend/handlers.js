@@ -48,5 +48,5 @@ registerHandler('pull-project', async ({ projectId }) => {
 });
 registerHandler(
   'clone-project',
-  async ({ remoteURL, projectPath }) => await cloneProject(remoteURL, projectPath)
+  async ({ remoteUrl, projectFolder }) => await cloneProject(remoteUrl, projectFolder)
 );
