@@ -16,7 +16,7 @@ import Text from '../components/Text';
 import Position from '../components/Position';
 import useInput from '../effects/useInput';
 import requestFromWorker from '../lib/requestFromWorker';
-import loginBg from './login-bg.jpeg';
+import bg from './bg.jpeg';
 
 const Login = ({ router }) => {
   const { user, setUser } = useUser();
@@ -55,7 +55,7 @@ const Login = ({ router }) => {
         fluid={true}
         justifyContent="center" 
         alignItems="center"
-        style={{ backgroundImage: `url(${loginBg})`}}
+        style={{ backgroundImage: `url(${bg})`}}
       >
         <Size height="60px" width="100%">
           <Position position="fixed" top="0">
@@ -97,12 +97,7 @@ const Login = ({ router }) => {
               </FormGroup>
               <Space padding="20px 0">
                 <div>
-                  <Button 
-                    type="submit"
-                    block
-                  >
-                    Sign Up
-                  </Button>
+                  <Button type="submit" block>Sign Up</Button>
                 </div>
               </Space>
             </Form>
