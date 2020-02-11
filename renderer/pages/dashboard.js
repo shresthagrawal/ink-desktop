@@ -6,6 +6,7 @@ import { Row, Col, H5, Button, Container } from '@bootstrap-styled/v4';
 import { complementarySecondary } from '../layout/colors';
 import useProjects from '../effects/useProjects';
 import useUser from '../effects/useUser';
+import useInput from '../effects/useInput';
 import Text from '../components/Text';
 import Header from '../components/Header';
 import Space from '../components/Space';
@@ -58,6 +59,7 @@ const CloneInput = styled(Input)`
 `;
 
 const Dashboard = ({ openTab }) => {
+    const { value: remoteUrl, bind: bindRemoteUrl, reset: resetRemoteUrl } = useInput('');
     const { user, loading } = useUser();
     const { projects, setProjects } = useProjects();
     const router = useRouter();
@@ -79,6 +81,24 @@ const Dashboard = ({ openTab }) => {
         const projects = await requestFromWorker('add-project', projectPath);
         setProjects(projects);
     }, []);
+
+    const handleCloneRepository = useCallback(async () => {
+        const { canceled, filePaths } = await remote.dialog.showOpenDialog({
+            properties: ['openDirectory'],
+        });
+
+        if (canceled || filePaths.length !== 1) {
+            return;
+        }
+
+        const projectFolder = filePaths[0];
+        const projects = await requestFromWorker('clone-project', {
+            remoteUrl: remoteUrl,
+            projectFolder: projectFolder
+        });
+        resetRemoteUrl()
+        setProjects(projects);
+    }, [remoteUrl]);
 
     const deleteProject = (projectPath) => async (event) => {
         const updatedProjectsList = await requestFromWorker('delete-project', projectPath);
@@ -168,9 +188,10 @@ const Dashboard = ({ openTab }) => {
                                                         type="text"
                                                         size="lg"
                                                         placeholder="Project Url"
+                                                        {...bindRemoteUrl}
                                                     />
                                                 </Space>
-                                                <Button size="sm">Clone</Button>
+                                                <Button onClick={handleCloneRepository} size="sm">Clone</Button>
                                             </FlexContainer>
                                         </div>
                                     </Size>

@@ -1,6 +1,6 @@
 import * as userStore from '../lib/store/user-store';
 import * as projectStore from '../lib/store/project-store';
-import { initProject, commitProject, getProjectState } from '../lib/project';
+import { initProject, commitProject, getProjectState, cloneProject } from '../lib/project';
 import { gitPush, gitPull } from '../lib/git/utils';
 import { ParserManager } from '../lib/parser';
 import { getById } from '../lib/store/project-store';
@@ -46,3 +46,7 @@ registerHandler('pull-project', async ({ projectId }) => {
   await gitPull(project.path, 'origin', 'master', 'master');
   await ParserManager.resetInstance(projectId);
 });
+registerHandler(
+  'clone-project',
+  async ({ remoteUrl, projectFolder }) => await cloneProject(remoteUrl, projectFolder)
+);
