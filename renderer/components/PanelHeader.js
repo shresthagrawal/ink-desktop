@@ -21,9 +21,9 @@ const StyledRow = styled.div`
 export default function PanelHeader({ title, fontWeight, fontSize, renderIcon }) {
   // TODO add icon
   return (
-    <StyledRow fontWeight={fontWeight || 300} fontSize={fontSize}>
+    <StyledRow fontWeight={fontWeight || 400} fontSize={fontSize}>
       {renderIcon ? renderIcon() : null}
-      {title} 
+      {title}
     </StyledRow>
   );
 }

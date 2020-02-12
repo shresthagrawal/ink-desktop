@@ -13,3 +13,4 @@ export const buttonInfo = '#929292';
 
 export const inputBackground = '#222222';
 export const playerBackground = '#101010';
+export const userBackground = '#222';

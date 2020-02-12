@@ -20,7 +20,7 @@ import Triangle from './Triangle';
 const GRAPH_LINE_LENGTH = "100px";
 const GRAPH_LINE_WIDTH = "4px";
 const GRAPH_SUB_BRANCH_DEPTH = "60px";
-const MASTER_BRANCH_BG = "46px"; 
+const MASTER_BRANCH_BG = "46px";
 const NODE_SIZE = "30px";
 const GRAPH_COLORS = [buttonPrimary, buttonSecondary, buttonInfo];
 
@@ -160,8 +160,8 @@ const CommitGraph = ({ graph }) => {
             <Size width="100%" height="70px">
               <FlexContainer justifyContent="center" style={{background: "rgb(0, 0, 0, .3)"}}>
                 <Space padding="0 35px">
-                  <Text size="18px" weight="300" color="#fff">Master</Text>
-                </Space> 
+                  <Text size="18px" color="#fff">Master</Text>
+                </Space>
               </FlexContainer>
             </Size>
           </Position>

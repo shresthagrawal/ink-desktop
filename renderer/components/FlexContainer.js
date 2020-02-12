@@ -1,14 +1,10 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 const FlexContainer = styled.div`
-    ${
-        props => css`
-            display: flex;
-            flex-flow: ${props.flow  || 'column'};
-            flex-grow: ${props.grow  || 1};
-            justify-content: ${props.justifyContent || ''};
-            align-items: ${props.alignItems || ''};
-        `
-    }  
+  display: flex;
+  flex-flow: ${props => props.flow || 'column'};
+  flex-grow: ${props => props.grow || 1};
+  justify-content: ${props => props.justifyContent || ''};
+  align-items: ${props => props.alignItems || ''};
 `;
 export default FlexContainer;

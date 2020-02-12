@@ -1,11 +1,7 @@
 import React, { useCallback } from 'react';
 import { withRouter } from 'next/router';
 import Head from 'next/head';
-import {
-  Button,
-  Form,
-  FormGroup,
-} from '@bootstrap-styled/v4';
+import { Button, Form, FormGroup } from '@bootstrap-styled/v4';
 import useUser from '../effects/useUser';
 import Page from '../components/Page';
 import Input from '../components/Input';
@@ -53,24 +49,40 @@ const Login = ({ router }) => {
       </Head>
       <FlexContainer
         fluid={true}
-        justifyContent="center" 
+        justifyContent="center"
         alignItems="center"
-        style={{ backgroundImage: `url(${bg})`}}
+        style={{ backgroundImage: `url(${bg})` }}
       >
         <Size height="60px" width="100%">
           <Position position="fixed" top="0">
-            <div style={{background: '#181818'}}>
+            <div style={{ background: '#181818' }}>
               <FlexContainer fluid={true} justifyContent="center">
                 <Space padding="20px 14px">
-                  <Text color="#fff" size="16px" weight="900" family="Bowlby One">INK</Text>
+                  <Text
+                    color="#fff"
+                    size="16px"
+                    weight="900"
+                    style={{ fontFamily: 'Bowlby One' }}
+                  >
+                    INK
+                  </Text>
                 </Space>
               </FlexContainer>
             </div>
           </Position>
         </Size>
-        <Text align="center" size="177px" family="Bowlby One" lineHeight="0.85">INK</Text>
+        <Text
+          align="center"
+          size="177px"
+          style={{ fontFamily: 'Bowlby One' }}
+          lineHeight="0.85"
+        >
+          INK
+        </Text>
         <Space padding="0 0 30px">
-          <Text align="center" color="#fadabc" size="22px">TRUSTED MUSIC COLLABORATION</Text>
+          <Text align="center" color="#fadabc" size="22px">
+            TRUSTED MUSIC COLLABORATION
+          </Text>
         </Space>
         <Size width="350px">
           <div>
@@ -97,7 +109,9 @@ const Login = ({ router }) => {
               </FormGroup>
               <Space padding="20px 0">
                 <div>
-                  <Button type="submit" block>Sign Up</Button>
+                  <Button type="submit" block>
+                    Sign Up
+                  </Button>
                 </div>
               </Space>
             </Form>

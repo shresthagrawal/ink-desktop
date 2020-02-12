@@ -258,7 +258,7 @@ export default function Project({ id }) {
                               <LocalChangeVerticalBranch height={index < delta.tracks.length-1 ? "40px" : "21px"} />
                               <LocalChangeHorizontalBranch />
                               <TrackIcon>{trackEmoji[index%5]}</TrackIcon>
-                              <TrackName size="16px" weight="100">{trackName}</TrackName>
+                              <TrackName size="16px">{trackName}</TrackName>
                             </FlexContainer>
                           </Space>
                         </Size>
@@ -350,7 +350,7 @@ export default function Project({ id }) {
               </CommitGraphContainer>
             </CenterPanel>
             <Panel md={3}>
-              <PanelHeader title={project.name.toUpperCase()} fontWeight="100" fontSize="18px" />
+              <PanelHeader title={project.name.toUpperCase()} fontSize="18px" />
               <Form className="m-2" onSubmit={handleInvite}>
                 <Space padding="40px">
                   <div>
@@ -361,11 +361,11 @@ export default function Project({ id }) {
                   <div>
                     <Text size="22px" weight="500" align="center">Share it!</Text>
                     <Space padding="4px 0 24px">
-                      <Text size="18px" weight="300" align="center" height="21px">
+                      <Text size="18px" align="center" height="21px">
                         Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                       </Text>
                     </Space>
-                    <TypeAhead 
+                    <TypeAhead
                       placeholder="Enter Recipient"
                       onChange={setReceipientValue}
                       value={receipientValue}
