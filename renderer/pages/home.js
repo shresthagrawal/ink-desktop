@@ -48,7 +48,7 @@ const Home = () => {
               <Space margin="0 10px 0 0">
                 <FontAwesomeIcon color="#fff" size="lg" icon={faFileAudio} />
               </Space>
-              <HeaderText color="#fff" size="18px" weight="100">{project.name}</HeaderText>
+              <HeaderText color="#fff" size="18px">{project.name}</HeaderText>
             </FlexContainer>
           ),
           isPinned: false,

@@ -12,15 +12,15 @@ import '@ibm/plex/css/ibm-plex.css';
 
 const inkTheme = makeTheme({
   '$font-family-sans-serif:':
-    "'Roboto', 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif",
-  '$font-family-base': "'Roboto', 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif",
+    "Inter, 'Helvetica Neue', Arial, sans-serif",
+  '$font-family-base': "Inter, 'Helvetica Neue', Arial, sans-serif",
   '$text-color': '#fff',
   '$headings-color': '#fff',
   '$body-bg': backgroundPrimary,
   '$brand-primary': backgroundPrimary,
   '$brand-info': backgroundSecondary,
   '$link-decoration': 'none',
-  '$headings-font-weight': 300,
+  '$headings-font-weight': 400,
   '$panel-bg': backgroundPanel,
   '$btn-primary-bg': buttonPrimary,
   '$btn-secondary-bg': buttonSecondary,
@@ -47,7 +47,7 @@ const inkTheme = makeTheme({
   '$btn-padding-y-sm': '.5rem',
   '$btn-border-radius': '.3rem',
   '$btn-border-radius-sm': '.3rem',
-  '$btn-font-weight': '900'
+  '$btn-font-weight': '500'
 });
 
 export default inkTheme;

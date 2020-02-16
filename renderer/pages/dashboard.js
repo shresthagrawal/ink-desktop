@@ -19,7 +19,12 @@ import Spinner from '../components/Spinner';
 import useTimeout from '../effects/useTimeout';
 import bg from './bg.jpeg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faFileAudio, faFolderPlus } from '@fortawesome/free-solid-svg-icons';
+import {
+  faTimes,
+  faFileAudio,
+  faFolderPlus,
+} from '@fortawesome/free-solid-svg-icons';
+import ModalDialog from '../components/ModalDialog';
 
 const TallRow = styled(Row)`
   flex-grow: 1;
@@ -54,155 +59,211 @@ const CloneInput = styled(Input)`
   color: #fff;
   flex-grow: 1;
   &:focus {
-      outline: none;
+    outline: none;
   }
 `;
 
 const Dashboard = ({ openTab }) => {
-    const { value: remoteUrl, bind: bindRemoteUrl, reset: resetRemoteUrl } = useInput('');
-    const { user, loading } = useUser();
-    const { projects, setProjects } = useProjects();
-    const router = useRouter();
+  const { user, loading } = useUser();
+  const { projects, setProjects } = useProjects();
+  const router = useRouter();
 
-    const [ready, setReady] = useState(false);
-    const [delayed, setDelayed] = useState(false);
-    const startLoadingTimeout = useTimeout(() => setDelayed(true), 1000);
+  const [ready, setReady] = useState(false);
+  const [delayed, setDelayed] = useState(false);
+  const startLoadingTimeout = useTimeout(() => setDelayed(true), 1000);
 
-    const handleChooseRepository = useCallback(async () => {
-        const { canceled, filePaths } = await remote.dialog.showOpenDialog({
-            properties: ['openDirectory'],
-        });
+  const handleChooseRepository = useCallback(async () => {
+    const { canceled, filePaths } = await remote.dialog.showOpenDialog({
+      properties: ['openDirectory'],
+    });
 
-        if (canceled || filePaths.length !== 1) {
-            return;
-        }
-
-        const projectPath = filePaths[0];
-        const projects = await requestFromWorker('add-project', projectPath);
-        setProjects(projects);
-    }, []);
-
-    const handleCloneRepository = useCallback(async () => {
-        const { canceled, filePaths } = await remote.dialog.showOpenDialog({
-            properties: ['openDirectory'],
-        });
-
-        if (canceled || filePaths.length !== 1) {
-            return;
-        }
-
-        const projectFolder = filePaths[0];
-        const projects = await requestFromWorker('clone-project', {
-            remoteUrl: remoteUrl,
-            projectFolder: projectFolder
-        });
-        resetRemoteUrl()
-        setProjects(projects);
-    }, [remoteUrl]);
-
-    const deleteProject = (projectPath) => async (event) => {
-        const updatedProjectsList = await requestFromWorker('delete-project', projectPath);
-        setProjects(updatedProjectsList);
+    if (canceled || filePaths.length !== 1) {
+      return;
     }
 
-    useEffect(() => {
-        // if `user.email` is undefined, there is no user logged in
-        if (!!user && typeof user.email === 'undefined' && !loading) {
-            router.push('/login');
-        } else if (!!user && user.email && !loading) {
-            setReady(true);
-        }
-    }, [user, loading]);
+    const projectPath = filePaths[0];
+    const projects = await requestFromWorker('add-project', projectPath);
+    setProjects(projects);
+  }, []);
 
-    useEffect(() => {
-        if (ready && delayed) {
-            setDelayed(false);
-        } else if (!ready && !delayed) {
-            startLoadingTimeout();
-        }
-    }, [ready, delayed]);
+  const handleCloneRepository = useCallback(() => {
+    setDialogActive(true);
+  });
 
-    if (!ready) {
-        return (
-            <SpinnerContainer>
-                {delayed && <Spinner role="status" />}
-            </SpinnerContainer>
-        );
-    }
-
-    return (
-        <>
-            {user ? <Header user={user} /> : null}
-            <Space padding="77px 0 0">
-                <TallRow>
-                    <Panel md={2}>
-                        <Space padding="15px 15px 0">
-                            <Text size="21px" weight="900">Projects</Text>
-                        </Space>
-                        {projects.length > 0 ? (
-                            projects.map((project) => (
-                                <Space padding="15px" key={project.id}>
-                                    <Project flow="row" alignItems="center" justifyContent="space-between">
-                                        <FlexContainer flow="row" onClick={() => openTab(project)}>
-                                            <Space margin="0 10px 0 0">
-                                                <FontAwesomeIcon color="#fff" size="lg" icon={faFileAudio} />
-                                            </Space>
-                                            <Text>{project.name}</Text>
-                                        </FlexContainer>
-                                        <FontAwesomeIcon
-                                            color="#fff"
-                                            size="sm"
-                                            icon={faTimes}
-                                            onClick={deleteProject(project.path)}
-                                        />
-                                    </Project>
-                                </Space>
-                            ))
-                        ) : (
-                                <Space padding="15px">
-                                    <Text color={complementarySecondary}>You have no active projects.</Text>
-                                </Space>
-                            )}
-                    </Panel>
-                    <Col className="bg-info p-3" style={{ backgroundImage: `url(${bg})` }}>
-                        <Space margin="60px">
-                            <div>
-                                <Size width="450px" height="315px">
-                                    <UploadProject onClick={handleChooseRepository} alignItems="center" justifyContent="center">
-                                        <Space margin="0 0 30px">
-                                            <FontAwesomeIcon size="5x" color="#fff" icon={faFolderPlus} />
-                                        </Space>
-                                        <Text size="18px">Click or drag folder to this area</Text>
-                                        <Text size="18px">to add it to your projects</Text>
-                                    </UploadProject>
-                                </Size>
-                                <Space padding="30px 0 0">
-                                    <Size width="450px">
-                                        <div>
-                                            <Space padding="0 0 10px">
-                                                <Text size="21px" weight="900">Clone</Text>
-                                            </Space>
-                                            <FlexContainer flow="row" justifyContent="space-between">
-                                                <Space margin="0 15px 0 0">
-                                                    <CloneInput
-                                                        type="text"
-                                                        size="lg"
-                                                        placeholder="Project Url"
-                                                        {...bindRemoteUrl}
-                                                    />
-                                                </Space>
-                                                <Button onClick={handleCloneRepository} size="sm">Clone</Button>
-                                            </FlexContainer>
-                                        </div>
-                                    </Size>
-                                </Space>
-                            </div>
-                        </Space>
-                    </Col>
-                </TallRow>
-            </Space>
-        </>
+  const deleteProject = projectPath => async event => {
+    const updatedProjectsList = await requestFromWorker(
+      'delete-project',
+      projectPath
     );
+    setProjects(updatedProjectsList);
+  };
+
+  useEffect(() => {
+    // if `user.email` is undefined, there is no user logged in
+    if (!!user && typeof user.email === 'undefined' && !loading) {
+      router.push('/login');
+    } else if (!!user && user.email && !loading) {
+      setReady(true);
+    }
+  }, [user, loading]);
+
+  useEffect(() => {
+    if (ready && delayed) {
+      setDelayed(false);
+    } else if (!ready && !delayed) {
+      startLoadingTimeout();
+    }
+  }, [ready, delayed]);
+
+  const [projectUrl, setProjectUrl] = useState('');
+  const handleProjectUrlChange = useCallback(event => {
+    setProjectUrl(event.target.value);
+  });
+  const [dialogActive, setDialogActive] = useState(false);
+  const [processing, setProcessing] = useState(false);
+  const handleDismiss = useCallback(() => {
+    if (processing) {
+      return;
+    }
+    setDialogActive(false);
+  });
+  const handleClone = useCallback((projectUrl, projectPath) => {
+    (async () => {
+      setProcessing(true);
+
+      const projects = await requestFromWorker('clone-project', {
+        remoteUrl: projectUrl,
+        projectFolder: projectPath,
+      });
+      setProjectUrl('');
+      setProjects(projects);
+
+      setProcessing(false);
+      setDialogActive(false);
+    })();
+  });
+
+  if (!ready) {
+    return (
+      <SpinnerContainer>
+        {delayed && <Spinner role="status" />}
+      </SpinnerContainer>
+    );
+  }
+  return (
+    <>
+      <ModalDialog
+        active={dialogActive}
+        projectUrl={projectUrl}
+        onDismiss={handleDismiss}
+        onSubmit={handleClone}
+        processing={processing}
+        disabled={false}
+      />
+
+      {user ? <Header user={user} /> : null}
+      <Space padding="77px 0 0">
+        <TallRow>
+          <Panel md={2}>
+            <Space padding="15px 15px 0">
+              <Text size="21px" weight="600">
+                Projects
+              </Text>
+            </Space>
+            {projects.length > 0 ? (
+              projects.map(project => (
+                <Space padding="15px" key={project.id}>
+                  <Project
+                    flow="row"
+                    alignItems="center"
+                    justifyContent="space-between"
+                  >
+                    <FlexContainer flow="row" onClick={() => openTab(project)}>
+                      <Space margin="0 10px 0 0">
+                        <FontAwesomeIcon
+                          color="#fff"
+                          size="lg"
+                          icon={faFileAudio}
+                        />
+                      </Space>
+                      <Text>{project.name}</Text>
+                    </FlexContainer>
+                    <FontAwesomeIcon
+                      color="#fff"
+                      size="sm"
+                      icon={faTimes}
+                      onClick={deleteProject(project.path)}
+                    />
+                  </Project>
+                </Space>
+              ))
+            ) : (
+              <Space padding="15px">
+                <Text color={complementarySecondary}>
+                  You have no active projects.
+                </Text>
+              </Space>
+            )}
+          </Panel>
+          <Col
+            className="bg-info p-3"
+            style={{ backgroundImage: `url(${bg})` }}
+          >
+            <Space margin="60px">
+              <div>
+                <Size width="450px" height="315px">
+                  <UploadProject
+                    onClick={handleChooseRepository}
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <Space margin="0 0 30px">
+                      <FontAwesomeIcon
+                        size="5x"
+                        color="#fff"
+                        icon={faFolderPlus}
+                      />
+                    </Space>
+                    <Text size="18px">Click or drag folder to this area</Text>
+                    <Text size="18px">to add it to your projects</Text>
+                  </UploadProject>
+                </Size>
+                <Space padding="30px 0 0">
+                  <Size width="450px">
+                    <div>
+                      <Space padding="0 0 10px">
+                        <Text size="21px" weight="500">
+                          Clone
+                        </Text>
+                      </Space>
+                      <FlexContainer flow="row" justifyContent="space-between">
+                        <Space margin="0 15px 0 0">
+                          <CloneInput
+                            type="text"
+                            size="lg"
+                            placeholder="Project URL"
+                            value={projectUrl}
+                            onChange={handleProjectUrlChange}
+                          />
+                        </Space>
+                        <Button
+                          onClick={handleCloneRepository}
+                          size="sm"
+                          disabled={!projectUrl}
+                        >
+                          Clone
+                        </Button>
+                      </FlexContainer>
+                    </div>
+                  </Size>
+                </Space>
+              </div>
+            </Space>
+          </Col>
+        </TallRow>
+      </Space>
+    </>
+  );
 };
 
 export default Dashboard;
