@@ -2,6 +2,7 @@ import { app } from 'electron';
 import serve from 'electron-serve';
 import { ipcMain as ipc } from 'electron-better-ipc';
 import uuid from 'uuid/v1';
+import url from 'url';
 import { createWindow, exitOnChange } from './helpers';
 import forkBackend from './helpers/fork-backend';
 
@@ -13,6 +14,8 @@ if (isProd) {
   exitOnChange();
   app.setPath('userData', `${app.getPath('userData')} (development)`);
 }
+
+let mainWindow;
 
 async function sendRequest(workerProcess, event, data) {
   const requestId = uuid();
@@ -34,7 +37,7 @@ async function handleAppReady(workerProcess) {
     async ({ event, data }) => await sendRequest(workerProcess, event, data)
   );
 
-  const mainWindow = createWindow('main', {
+  mainWindow = createWindow('main', {
     width: 1000,
     height: 600,
     minWidth: 1000,
@@ -62,3 +65,19 @@ export async function initApp() {
     app.quit();
   });
 }
+
+app.setAsDefaultProtocolClient('ink');
+
+app.on('open-url', function(event, requestUrl) {
+  let parsedUrl = url.parse(requestUrl, true);
+  if (parsedUrl.protocol !== 'ink:' || !mainWindow) {
+    return;
+  }
+
+  ipc.callRenderer(mainWindow, 'to-renderer', {
+    event: 'import-project-from-external',
+    data: {
+      remoteUrl: parsedUrl.query.url,
+    },
+  });
+});

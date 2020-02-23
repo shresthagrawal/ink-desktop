@@ -1,9 +1,10 @@
 import * as userStore from '../lib/store/user-store';
 import * as projectStore from '../lib/store/project-store';
 import { initProject, commitProject, getProjectState, cloneProject } from '../lib/project';
-import { gitPush, gitPull } from '../lib/git/utils';
+import { gitPush, gitPull, getRemote } from '../lib/git/utils';
 import { ParserManager } from '../lib/parser';
 import { getById } from '../lib/store/project-store';
+import { getAbletonPath, openProject } from '../lib/daw';
 
 const handlers = new Map();
 function registerHandler(event, handler) {
@@ -49,4 +50,18 @@ registerHandler('pull-project', async ({ projectId }) => {
 registerHandler(
   'clone-project',
   async ({ remoteUrl, projectFolder }) => await cloneProject(remoteUrl, projectFolder)
+);
+registerHandler(
+  'open-project',
+  async ({ projectId }) => await openProject(projectId)
+);
+registerHandler('can-open-project', () => getAbletonPath() !== null);
+
+registerHandler(
+  'get-remote',
+  async ({ projectId }) => {
+    let project = getById(projectId)
+    let remote = await getRemote(project.path, 'origin');
+    return remote.url();
+  }
 );

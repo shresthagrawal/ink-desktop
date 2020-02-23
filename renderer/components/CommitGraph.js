@@ -12,9 +12,11 @@ import Space from './Space';
 import Position from './Position';
 import FlexContainer from './FlexContainer';
 import UserImage from './UserImage';
-import gravatar from 'gravatar';
 import Size from './Size';
 import Triangle from './Triangle';
+import avatar1 from '../layout/images/avatar-1.png'
+import avatar2 from '../layout/images/avatar-2.png'
+import avatar3 from '../layout/images/avatar-3.png'
 
 // Commit graph config
 const GRAPH_LINE_LENGTH = "100px";
@@ -77,12 +79,22 @@ const SubBranchEndArrowContainer = styled.div`
   line-height: 14px;
 `;
 
+const avatars = [avatar1, avatar2, avatar3];
+const randomAvatar = () =>
+  avatars[Math.round(Math.random() * (avatars.length - 1))];
+
 const Node = ({ node, color }) => {
   const [isOpen, setIsOpen] = React.useState(false);
+  const [avatar] = React.useState(randomAvatar());
   return (
     <>
       <NodeElement color={color} id={node.hash}>
-        <UserImage src={gravatar.url(node.author.email)} size={NODE_SIZE} borderColor={color} alt="Author"/>
+        <UserImage
+          src={avatar}
+          size={NODE_SIZE}
+          borderColor={color}
+          alt="Author"
+        />
       </NodeElement>
       <Tooltip
         placement="top"
@@ -92,17 +104,24 @@ const Node = ({ node, color }) => {
       >
         <Space padding="5px">
           <FlexContainer flow="row" alignItems="center">
-            <UserImage src={gravatar.url(node.author.email || "")} alt="Author" size="35px" borderColor={color} />
+            <UserImage
+              src={avatar}
+              alt="Author"
+              size="35px"
+              borderColor={color}
+            />
             <div>
               <Text size="12px">{node.message}</Text>
-              <Text size="10px" color="#8B8B8B" align="right">-{node.author.name}</Text>
+              <Text size="10px" color="#8B8B8B" align="right">
+                -{node.author.name}
+              </Text>
             </div>
           </FlexContainer>
         </Space>
       </Tooltip>
     </>
-  )
-}
+  );
+};
 
 const CommitGraph = ({ graph }) => {
   const getTotalCommits = (node) => {

@@ -1,30 +1,29 @@
 import { remote } from 'electron';
 import React, { useCallback, useEffect, useState } from 'react';
-import Input from '../components/Input';
+import Input from './Input';
 import styled from 'styled-components';
 import { Row, Col, H5, Button, Container } from '@bootstrap-styled/v4';
 import { complementarySecondary } from '../layout/colors';
 import useProjects from '../effects/useProjects';
 import useUser from '../effects/useUser';
-import useInput from '../effects/useInput';
-import Text from '../components/Text';
-import Header from '../components/Header';
-import Space from '../components/Space';
-import Size from '../components/Size';
-import FlexContainer from '../components/FlexContainer';
-import Panel from '../components/Panel';
+import Text from './Text';
+import Header from './Header';
+import Space from './Space';
+import Size from './Size';
+import FlexContainer from './FlexContainer';
+import Panel from './Panel';
 import requestFromWorker from '../lib/requestFromWorker';
 import { useRouter } from 'next/router';
-import Spinner from '../components/Spinner';
+import Spinner from './Spinner';
 import useTimeout from '../effects/useTimeout';
-import bg from './bg.jpeg';
+import bg from '../pages/bg.jpeg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faTimes,
   faFileAudio,
   faFolderPlus,
 } from '@fortawesome/free-solid-svg-icons';
-import ModalDialog from '../components/ModalDialog';
+import ModalDialog from './ModalDialog';
 
 const TallRow = styled(Row)`
   flex-grow: 1;
@@ -142,6 +141,18 @@ const Dashboard = ({ openTab }) => {
       setDialogActive(false);
     })();
   });
+
+  useEffect(() => {
+    if (!router.query.importProject) {
+      return;
+    }
+
+    const { importProject } = router.query;
+    setProjectUrl(importProject);
+    setDialogActive(true);
+
+    router.push('/home');
+  }, [router.query]);
 
   if (!ready) {
     return (
