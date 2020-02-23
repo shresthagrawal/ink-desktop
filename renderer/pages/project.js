@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import slugify from 'slugify';
-import { inviteCollaborators } from '../lib/mail';
 import {
   Col,
   H5,
@@ -14,10 +13,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDesktop } from '@fortawesome/free-solid-svg-icons';
 import Header from '../components/Header';
 import Input from '../components/Input';
-import Textarea from '../components/Textarea';
 import Panel from '../components/Panel';
 import PanelHeader from '../components/PanelHeader';
-import ShareImage from '../components/ShareImage';
 import useProjects from '../effects/useProjects';
 import useProjectState from '../effects/useProjectState';
 import useInput from '../effects/useInput';
@@ -39,11 +36,13 @@ import Space from '../components/Space';
 import Text from '../components/Text';
 import Size from '../components/Size';
 import { Button } from '../components/form';
+import SuccessLabel from '../components/SuccessLabel'
 
 import bg from './bg.jpeg';
 import FlexContainer from '../components/FlexContainer';
 import useBackendRequest from '../effects/useBackendRequest';
 import { fadeIn } from '../layout/animations';
+import ProjectInvite from '../components/Project/Invite';
 
 const TallRow = styled(Row)`
   flex-grow: 1;
@@ -79,20 +78,6 @@ const TrackLine = styled(Col).attrs({
 
 const NoNewTracksLine = styled(TrackLine)`
   margin-top: 12px;
-`;
-
-const SendSuccess = styled(animated.em)`
-  display: inline-block;
-  margin: 3px;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 18px;
-  color: ${complementaryPrimary};
-`;
-
-const SendButton = styled(BootstrapButton)`
-  float: right;
-  margin-bottom: 20px;
 `;
 
 const ActionsList = styled.ul`
@@ -159,16 +144,7 @@ export default function Project({ id }) {
   const { user } = useUser();
   const [canOpenProject] = useBackendRequest('can-open-project');
   const [commitSigned, setCommitSigned] = useTemporaryState(false, 5000);
-  const [mailSent, setMailSent] = useTemporaryState(false, 5000, () => {
-    resetInvitationRecipient();
-    resetInvitationMessage();
-  });
-  const {
-    value: invitationRecipient,
-    bind: bindInvitationRecipient,
-    reset: resetInvitationRecipient,
-  } = useInput('');
-  const mailSentTransitions = useFade(mailSent);
+
   const commitSignedTransitions = useFade(commitSigned);
   const project = projects.find(project => project.id === id);
 
@@ -182,12 +158,6 @@ export default function Project({ id }) {
     value: commitMessage,
     bind: bindCommitMessage,
     reset: resetCommitMessage,
-  } = useInput('');
-
-  const {
-    value: invitationMessage,
-    bind: bindInvitationMessage,
-    reset: resetInvitationMessage,
   } = useInput('');
 
   const handleSignCommit = useCallback(
@@ -230,24 +200,6 @@ export default function Project({ id }) {
     },
     [project]
   );
-
-  const handleInvite = useCallback(async event => {
-    event.preventDefault();
-    const remoteUrl = await requestFromWorker('get-remote', {
-      projectId: project.id,
-    });
-    const recipients = invitationRecipient
-      .split(/[ ,]+/)
-      .map(recipient => recipient.trim());
-    await inviteCollaborators(
-      recipients,
-      invitationMessage,
-      project.name,
-      remoteUrl,
-      user
-    );
-    setMailSent(true);
-  });
 
   const handleRefreshProject = useCallback(async event => {
     event.preventDefault();
@@ -385,9 +337,9 @@ export default function Project({ id }) {
                 {commitSignedTransitions.map(
                   ({ item, key, props }) =>
                     item && (
-                      <SendSuccess key={key} style={props}>
+                      <SuccessLabel key={key} style={props}>
                         Signed!
-                      </SendSuccess>
+                      </SuccessLabel>
                     )
                 )}
               </Form>
@@ -408,56 +360,8 @@ export default function Project({ id }) {
                 <CommitGraph graph={initialMockCommits.concat(graph)} />
               </CommitGraphContainer>
             </CenterPanel>
-            <Panel md={3}>
-              <PanelHeader title={project.name.toUpperCase()} fontSize="18px" />
-              <Form className="m-2" onSubmit={handleInvite}>
-                <Space padding="40px">
-                  <div>
-                    <ShareImage />
-                  </div>
-                </Space>
-                <Space padding="0 20px">
-                  <div>
-                    <Text size="22px" weight="500" align="center">
-                      Share it!
-                    </Text>
-                    <Space padding="4px 0 24px">
-                      <Text size="18px" align="center" height="21px">
-                        Sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua.
-                      </Text>
-                    </Space>
-                    <FormGroup>
-                      <Input
-                        required
-                        type="email"
-                        placeholder="Recipient"
-                        {...bindInvitationRecipient}
-                      />
-                    </FormGroup>
-                    <FormGroup>
-                      <Textarea
-                        required
-                        placeholder="Message"
-                        className="mt-2"
-                        {...bindInvitationMessage}
-                      />
-                    </FormGroup>
-                    <SendButton size="sm" type="submit">
-                      Send
-                    </SendButton>
-                    {mailSentTransitions.map(
-                      ({ item, key, props }) =>
-                        item && (
-                          <SendSuccess key={key} style={props}>
-                            Sent!
-                          </SendSuccess>
-                        )
-                    )}
-                  </div>
-                </Space>
-              </Form>
-            </Panel>
+
+            <ProjectInvite project={project} />
           </TallRow>
         </Space>
       ) : null}
