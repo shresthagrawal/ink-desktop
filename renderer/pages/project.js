@@ -339,7 +339,7 @@ export default function Project({ id }) {
               </CommitGraphContainer>
             </CenterPanel>
 
-            <ProjectInvite project={project} />
+            <ProjectInvite project={project} user={user} />
           </TallRow>
         </Space>
       ) : null}

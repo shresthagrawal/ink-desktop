@@ -24,7 +24,7 @@ const SendButton = styled(BootstrapButton)`
   margin-bottom: 20px;
 `;
 
-export default function ProjectInvite({ project }) {
+export default function ProjectInvite({ project, user }) {
   const [mailSent, setMailSent] = useTemporaryState(false, 5000, () => {
     resetInvitationRecipient();
     resetInvitationMessage();
