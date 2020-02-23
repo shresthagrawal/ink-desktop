@@ -18,10 +18,10 @@ const TypeAheadContainer = styled(FlexContainer)`
   overflow-x: hidden;
 `;
 
-const TypeAheadInput = styled(Input)`
+const TypeAheadInputField = styled(Input)`
   border: none !important;
   height: 39px !important;
-`; 
+`;
 
 const Capsule = styled(FlexContainer)`
   border: 1px solid #606060;
@@ -43,7 +43,8 @@ const CloseIcon = styled.div`
   line-height: 14px;
 `;
 
-export default ({placeholder, onChange, value, type}) => {
+// an external contributor introduced this component in order to realize an email address input
+export default function TypeAheadInput({placeholder, onChange, value, type}) {
 
   const [inputValue, setInputValue] = React.useState("");
 
@@ -67,14 +68,14 @@ export default ({placeholder, onChange, value, type}) => {
     onChange(newValue.join(','))
   }
 
-  const capsuleValues = value ? value.split(",") : null;
+  const capsuleValues = value ? value.split(",") : [];
   if(inputValue) {
     capsuleValues.splice(capsuleValues.length-1, 1);
   }
 
   return <TypeAheadContainer flow="row">
     {
-      capsuleValues 
+      capsuleValues
         ? capsuleValues.map((val, index) => (
             <Capsule key={`capsule-${index}`} flow="row">
               {val.trim()}<CloseIcon onClick={deleteCapsule(index)}>&times;</CloseIcon>
@@ -82,6 +83,6 @@ export default ({placeholder, onChange, value, type}) => {
           ))
         : null
     }
-    <TypeAheadInput placeholder={placeholder} onChange={changeHandler} value={inputValue} type={type} />
+    <TypeAheadInputField placeholder={placeholder} onChange={changeHandler} value={inputValue} type={type} />
   </TypeAheadContainer>
 }

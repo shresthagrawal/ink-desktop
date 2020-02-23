@@ -40,7 +40,6 @@ import Text from '../components/Text';
 import Size from '../components/Size';
 import bg from './bg.jpeg';
 import FlexContainer from '../components/FlexContainer';
-import TypeAhead from '../components/TypeAhead';
 
 const TallRow = styled(Row)`
   flex-grow: 1;
@@ -136,16 +135,18 @@ const LocalChangeVerticalBranch = styled.div`
 `;
 
 export default function Project({ id }) {
-
-  const [receipientValue, setReceipientValue] = React.useState('');
-
   const { projects } = useProjects();
   const { user } = useUser();
   const [commitSigned, setCommitSigned] = useTemporaryState(false, 5000);
   const [mailSent, setMailSent] = useTemporaryState(false, 5000, () => {
-    setReceipientValue("");
+    resetInvitationRecipient();
     resetInvitationMessage();
   });
+  const {
+    value: invitationRecipient,
+    bind: bindInvitationRecipient,
+    reset: resetInvitationRecipient,
+  } = useInput('');
   const mailSentTransitions = useFade(mailSent);
   const commitSignedTransitions = useFade(commitSigned);
   const project = projects.find(project => project.id === id);
@@ -214,7 +215,8 @@ export default function Project({ id }) {
     const remoteUrl = await requestFromWorker('get-remote', {
         projectId: project.id
     });
-    const recipients = receipientValue.split(/[ ,]+/)
+    const recipients = invitationRecipient
+      .split(/[ ,]+/)
       .map(recipient => recipient.trim());
     await inviteCollaborators(
       recipients,
@@ -367,12 +369,14 @@ export default function Project({ id }) {
                         Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                       </Text>
                     </Space>
-                    <TypeAhead
-                      placeholder="Enter Recipient"
-                      onChange={setReceipientValue}
-                      value={receipientValue}
-                      type="email"
-                    />
+                    <FormGroup>
+                      <Input
+                        required
+                        type="email"
+                        placeholder="Recipient"
+                        {...bindInvitationRecipient}
+                      />
+                    </FormGroup>
                     <FormGroup>
                       <Textarea
                         required
