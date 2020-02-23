@@ -53,7 +53,7 @@ registerHandler(
 );
 registerHandler(
   'open-project',
-  async projectId => await openProject(projectId)
+  async ({ projectId }) => await openProject(projectId)
 );
 registerHandler('can-open-project', () => getAbletonPath() !== null);
 

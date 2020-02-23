@@ -36,7 +36,7 @@ import Space from '../components/Space';
 import Text from '../components/Text';
 import Size from '../components/Size';
 import { Button } from '../components/form';
-import SuccessLabel from '../components/SuccessLabel'
+import SuccessLabel from '../components/SuccessLabel';
 
 import bg from './bg.jpeg';
 import FlexContainer from '../components/FlexContainer';
@@ -201,6 +201,11 @@ export default function Project({ id }) {
     [project]
   );
 
+  const handleOpenProject = useCallback(async event => {
+    event.preventDefault();
+    await requestFromWorker('open-project', { projectId: project.id });
+  });
+
   const handleRefreshProject = useCallback(async event => {
     event.preventDefault();
     await reloadProjectState();
@@ -261,35 +266,6 @@ export default function Project({ id }) {
                     <MoreInfo>No new tracks.</MoreInfo>
                   </NoNewTracksLine>
                 )}
-                {/* {status.new && status.new.length > 0 && (
-                  <React.Fragment>
-                    <Row>
-                      <H6>New Files</H6>
-                    </Row>
-
-                    {status.new.map((filePath, index) => (
-                      <Row key={`new-${index}`}>
-                        <Col md={12}>
-                          <code>{filePath}</code>
-                        </Col>
-                      </Row>
-                    ))}
-                  </React.Fragment>
-                )}
-                {status.modified && status.modified.length > 0 && (
-                  <React.Fragment>
-                    <Row>
-                      <H6>Modified Files</H6>
-                    </Row>
-                    {status.modified.map((filePath, index) => (
-                      <Row key={`new-${index}`}>
-                        <Col md={12}>
-                          <code>{filePath}</code>
-                          </Col>
-                      </Row>
-                    ))}
-                  </React.Fragment>
-                )} */}
               </LocalChangesList>
               <LocalChangesDivider />
               <Form onSubmit={handleSignCommit} className="m-2 mt-4">
@@ -350,7 +326,9 @@ export default function Project({ id }) {
                   <ActionsList>
                     {canOpenProject && (
                       <ActionItem>
-                        <FadeInButton>Open in Ableton Live</FadeInButton>
+                        <FadeInButton onClick={handleOpenProject}>
+                          Open in Ableton Live
+                        </FadeInButton>
                       </ActionItem>
                     )}
                   </ActionsList>
