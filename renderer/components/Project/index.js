@@ -1,6 +1,5 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import styled from 'styled-components';
-import slugify from 'slugify';
 import {
   Col,
   H5,
@@ -11,38 +10,37 @@ import {
 } from '@bootstrap-styled/v4';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDesktop } from '@fortawesome/free-solid-svg-icons';
-import Header from '../components/Header';
-import Input from '../components/Input';
-import Panel from '../components/Panel';
-import PanelHeader from '../components/PanelHeader';
-import useProjects from '../effects/useProjects';
-import useProjectState from '../effects/useProjectState';
-import useInput from '../effects/useInput';
-import useUser from '../effects/useUser';
-import CommitGraph from '../components/CommitGraph';
+import Header from '../Header';
+import Input from '../Input';
+import Panel from '../Panel';
+import PanelHeader from '../PanelHeader';
+import useProjects from '../../effects/useProjects';
+import useProjectState from '../../effects/useProjectState';
+import useInput from '../../effects/useInput';
+import useUser from '../../effects/useUser';
+import CommitGraph from '../CommitGraph';
 import {
   buttonPrimary,
   complementaryPrimary,
   highlightSecondary,
   playerBackground,
-} from '../layout/colors';
-import HistoryIcon from '../components/HistoryIcon';
-import useTemporaryState from '../effects/useTemporaryState';
-import { animated } from 'react-spring';
-import useFade from '../effects/useFade';
-import { initialMockCommits, trackEmoji } from '../mocks';
-import requestFromWorker from '../lib/requestFromWorker';
-import Space from '../components/Space';
-import Text from '../components/Text';
-import Size from '../components/Size';
-import { Button } from '../components/form';
-import SuccessLabel from '../components/SuccessLabel';
+} from '../../layout/colors';
+import HistoryIcon from '../HistoryIcon';
+import useTemporaryState from '../../effects/useTemporaryState';
+import useFade from '../../effects/useFade';
+import { initialMockCommits, trackEmoji } from '../../mocks';
+import requestFromWorker from '../../lib/requestFromWorker';
+import Space from '../Space';
+import Text from '../Text';
+import Size from '../Size';
+import { Button } from '../form';
+import SuccessLabel from '../SuccessLabel';
 
-import bg from './bg.jpeg';
-import FlexContainer from '../components/FlexContainer';
-import useBackendRequest from '../effects/useBackendRequest';
-import { fadeIn } from '../layout/animations';
-import ProjectInvite from '../components/Project/Invite';
+import bg from '../../pages/bg.jpeg';
+import FlexContainer from '../FlexContainer';
+import useBackendRequest from '../../effects/useBackendRequest';
+import { fadeIn } from '../../layout/animations';
+import ProjectInvite from './Invite';
 
 const TallRow = styled(Row)`
   flex-grow: 1;
