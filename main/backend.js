@@ -1,6 +1,7 @@
 import createDebug from 'debug';
 import * as projectStore from '../lib/store/project-store';
 import * as userStore from '../lib/store/user-store';
+import { ProjectWatcher } from '../lib/project-watcher';
 import { handleRequest } from '../backend/handlers';
 import { setConfig } from '../lib/config';
 
@@ -35,5 +36,8 @@ export function initBackend() {
   };
 
   process.on('message', handleInit);
-  process.on('exit', () => debug('Background worker shutting down'));
+  process.on('exit', () => {
+    ProjectWatcher.unwatchAll();
+    debug('Background worker shutting down')
+  });
 }
