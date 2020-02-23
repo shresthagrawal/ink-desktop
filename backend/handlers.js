@@ -4,7 +4,7 @@ import { initProject, commitProject, getProjectState, cloneProject } from '../li
 import { gitPush, gitPull, getRemote } from '../lib/git/utils';
 import { ParserManager } from '../lib/parser';
 import { getById } from '../lib/store/project-store';
-import { openProject } from '../lib/project-daw';
+import { getAbletonPath, openProject } from '../lib/daw';
 
 const handlers = new Map();
 function registerHandler(event, handler) {
@@ -55,11 +55,12 @@ registerHandler(
   'open-project',
   async projectId => await openProject(projectId)
 );
+registerHandler('can-open-project', () => getAbletonPath() !== null);
 
 registerHandler(
-  'get-remote', 
+  'get-remote',
   async ({ projectId }) => {
-    let project = getById(projectId) 
+    let project = getById(projectId)
     let remote = await getRemote(project.path, 'origin');
     return remote.url();
   }

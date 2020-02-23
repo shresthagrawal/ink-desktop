@@ -6,7 +6,7 @@ import {
   Col,
   H5,
   Row,
-  Button,
+  Button as BootstrapButton,
   Form,
   FormGroup,
 } from '@bootstrap-styled/v4';
@@ -38,8 +38,12 @@ import requestFromWorker from '../lib/requestFromWorker';
 import Space from '../components/Space';
 import Text from '../components/Text';
 import Size from '../components/Size';
+import { Button } from '../components/form';
+
 import bg from './bg.jpeg';
 import FlexContainer from '../components/FlexContainer';
+import useBackendRequest from '../effects/useBackendRequest';
+import { fadeIn } from '../layout/animations';
 
 const TallRow = styled(Row)`
   flex-grow: 1;
@@ -86,19 +90,35 @@ const SendSuccess = styled(animated.em)`
   color: ${complementaryPrimary};
 `;
 
-
-const SendButton = styled(Button)`
+const SendButton = styled(BootstrapButton)`
   float: right;
   margin-bottom: 20px;
 `;
 
-const MediaPlayerContainer = styled.div`
+const ActionsList = styled.ul`
+  display: flex;
+  flex-flow: row;
+  flex-grow: 0;
+
+  width: 100%;
+  min-height: 50px;
+  margin: 0;
+  padding: 10px;
+  box-sizing: border-box;
+
+  list-style: none;
   background: ${playerBackground};
+`;
+
+const ActionItem = styled.li``;
+
+const FadeInButton = styled(Button)`
+  animation: ${fadeIn} 250ms ease-out;
 `;
 
 const CenterPanel = styled(Col)`
   overflow: hidden;
-  background: url(${bg})
+  background: url(${bg});
 `;
 
 const CommitGraphContainer = styled(Row)`
@@ -137,6 +157,7 @@ const LocalChangeVerticalBranch = styled.div`
 export default function Project({ id }) {
   const { projects } = useProjects();
   const { user } = useUser();
+  const [canOpenProject] = useBackendRequest('can-open-project');
   const [commitSigned, setCommitSigned] = useTemporaryState(false, 5000);
   const [mailSent, setMailSent] = useTemporaryState(false, 5000, () => {
     resetInvitationRecipient();
@@ -179,7 +200,7 @@ export default function Project({ id }) {
       }
       await requestFromWorker('commit-project', {
         projectId: project.id,
-        commitMessage
+        commitMessage,
       });
 
       resetCommitMessage();
@@ -193,7 +214,7 @@ export default function Project({ id }) {
     async event => {
       event.preventDefault();
       await requestFromWorker('push-project', {
-        projectId: project.id
+        projectId: project.id,
       });
     },
     [project]
@@ -203,7 +224,7 @@ export default function Project({ id }) {
     async event => {
       event.preventDefault();
       await requestFromWorker('pull-project', {
-        projectId: project.id
+        projectId: project.id,
       });
       await reloadProjectState();
     },
@@ -213,7 +234,7 @@ export default function Project({ id }) {
   const handleInvite = useCallback(async event => {
     event.preventDefault();
     const remoteUrl = await requestFromWorker('get-remote', {
-        projectId: project.id
+      projectId: project.id,
     });
     const recipients = invitationRecipient
       .split(/[ ,]+/)
@@ -246,7 +267,11 @@ export default function Project({ id }) {
                 fontSize="18px"
                 renderIcon={() => (
                   <Space margin="0 20px 0 0">
-                    <FontAwesomeIcon color="#74757A" size="lg" icon={faDesktop} />
+                    <FontAwesomeIcon
+                      color="#74757A"
+                      size="lg"
+                      icon={faDesktop}
+                    />
                   </Space>
                 )}
               />
@@ -255,13 +280,23 @@ export default function Project({ id }) {
                   <>
                     {delta.tracks.map((trackName, index) => (
                       <React.Fragment key={`new-${index}`}>
-                        {index === 0 ? <Space margin="0 30px"><LocalChangeVerticalBranch height="20px" /></Space> : null}
+                        {index === 0 ? (
+                          <Space margin="0 30px">
+                            <LocalChangeVerticalBranch height="20px" />
+                          </Space>
+                        ) : null}
                         <Size height="40px">
                           <Space margin="0 30px">
                             <FlexContainer flow="row" alignItems="center">
-                              <LocalChangeVerticalBranch height={index < delta.tracks.length-1 ? "40px" : "21px"} />
+                              <LocalChangeVerticalBranch
+                                height={
+                                  index < delta.tracks.length - 1
+                                    ? '40px'
+                                    : '21px'
+                                }
+                              />
                               <LocalChangeHorizontalBranch />
-                              <TrackIcon>{trackEmoji[index%5]}</TrackIcon>
+                              <TrackIcon>{trackEmoji[index % 5]}</TrackIcon>
                               <TrackName size="16px">{trackName}</TrackName>
                             </FlexContainer>
                           </Space>
@@ -304,7 +339,7 @@ export default function Project({ id }) {
                   </React.Fragment>
                 )} */}
               </LocalChangesList>
-              <LocalChangesDivider/>
+              <LocalChangesDivider />
               <Form onSubmit={handleSignCommit} className="m-2 mt-4">
                 <Space padding="10px 20px">
                   <div>
@@ -318,18 +353,32 @@ export default function Project({ id }) {
                     </FormGroup>
                     <FlexContainer flow="row">
                       <Space margin="0 10px 0 0">
-                        <Button size="sm" disabled={!(delta && delta.tracks && delta.tracks.length > 0)} type="submit">
+                        <BootstrapButton
+                          size="sm"
+                          disabled={
+                            !(delta && delta.tracks && delta.tracks.length > 0)
+                          }
+                          type="submit"
+                        >
                           Sign
-                        </Button>
+                        </BootstrapButton>
                       </Space>
                       <Space margin="0 10px 0 0">
-                        <Button size="sm" onClick={handlePush} color="secondary">
+                        <BootstrapButton
+                          size="sm"
+                          onClick={handlePush}
+                          color="secondary"
+                        >
                           Push
-                        </Button>
+                        </BootstrapButton>
                       </Space>
-                      <Button size="sm" onClick={handlePull} color="info">
+                      <BootstrapButton
+                        size="sm"
+                        onClick={handlePull}
+                        color="info"
+                      >
                         Pull
-                      </Button>
+                      </BootstrapButton>
                     </FlexContainer>
                   </div>
                 </Space>
@@ -345,8 +394,14 @@ export default function Project({ id }) {
             </Panel>
             <CenterPanel className="bg-info">
               <Row>
-                <Size width="100%" height="230px">
-                  <MediaPlayerContainer />
+                <Size width="100%">
+                  <ActionsList>
+                    {canOpenProject && (
+                      <ActionItem>
+                        <FadeInButton>Open in Ableton Live</FadeInButton>
+                      </ActionItem>
+                    )}
+                  </ActionsList>
                 </Size>
               </Row>
               <CommitGraphContainer className="mt-3">
@@ -363,10 +418,13 @@ export default function Project({ id }) {
                 </Space>
                 <Space padding="0 20px">
                   <div>
-                    <Text size="22px" weight="500" align="center">Share it!</Text>
+                    <Text size="22px" weight="500" align="center">
+                      Share it!
+                    </Text>
                     <Space padding="4px 0 24px">
                       <Text size="18px" align="center" height="21px">
-                        Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                        Sed do eiusmod tempor incididunt ut labore et dolore
+                        magna aliqua.
                       </Text>
                     </Space>
                     <FormGroup>
@@ -385,7 +443,9 @@ export default function Project({ id }) {
                         {...bindInvitationMessage}
                       />
                     </FormGroup>
-                    <SendButton size="sm" type="submit">Send</SendButton>
+                    <SendButton size="sm" type="submit">
+                      Send
+                    </SendButton>
                     {mailSentTransitions.map(
                       ({ item, key, props }) =>
                         item && (
