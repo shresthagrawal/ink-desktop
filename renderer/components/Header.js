@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 import Size from '../components/Size';
 import Position from '../components/Position';
@@ -6,13 +7,12 @@ import Space from '../components/Space';
 import FlexContainer from '../components/FlexContainer';
 import UserImage from '../components/UserImage';
 import avatar from '../layout/images/avatar-1.png'
+import { Button } from './form';
 
-const LogoutLink = styled(Text)`
-  cursor: pointer;
-  &:hover {
-    text-decoration: underline;
-  }
-`
+const ActionsContainer = styled.div`
+  padding: 16px;
+`;
+
 const Header = ({ user }) => (
   <Position position="absolute" zIndex={1}>
     <Size width="100%">
@@ -23,9 +23,9 @@ const Header = ({ user }) => (
             <Text color="#fff">{user.email}</Text>
           </FlexContainer>
         </Space>
-        <Space padding="16px">
-          <LogoutLink color="#fff">LOGOUT</LogoutLink>
-        </Space>
+        <ActionsContainer>
+          <Button>Logout</Button>
+        </ActionsContainer>
       </FlexContainer>
     </Size>
   </Position>
