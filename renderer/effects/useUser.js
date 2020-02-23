@@ -1,25 +1,6 @@
-import { useEffect, useState } from 'react';
-import requestFromWorker from '../lib/requestFromWorker';
+import useBackendRequest from './useBackendRequest';
 
 export default function useUser() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    async function fetchUser() {
-      setLoading(true);
-
-      try {
-        const user = await requestFromWorker('fetch-user');
-        setUser(user);
-        setLoading(false);
-      } catch (e) {
-        console.log(e);
-      }
-    }
-
-    fetchUser();
-  }, []);
-
+  const [user, setUser, loading] = useBackendRequest('fetch-user');
   return { user, setUser, loading };
 }
