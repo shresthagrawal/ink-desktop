@@ -15,7 +15,7 @@ if (isProd) {
   app.setPath('userData', `${app.getPath('userData')} (development)`);
 }
 
-let mainWindow;
+let mainWindow, workerProcess;
 
 async function sendRequest(workerProcess, event, data) {
   const requestId = uuid();
@@ -54,19 +54,26 @@ async function handleAppReady(workerProcess) {
 }
 
 export async function initApp() {
-  const workerProcess = await forkBackend();
+  workerProcess = await forkBackend();
 
   if (app.isReady()) {
     await handleAppReady(workerProcess);
   } else {
     app.on('ready', () => handleAppReady(workerProcess));
   }
-  app.on('window-all-closed', () => {
-    app.quit();
-  });
 }
 
 app.setAsDefaultProtocolClient('ink');
+
+app.on('window-all-closed', () => {
+  app.quit();
+});
+
+app.on('will-quit', () => {
+  if (workerProcess) {
+    workerProcess.kill('SIGHUP');
+  }
+});
 
 app.on('open-url', function(event, requestUrl) {
   let parsedUrl = url.parse(requestUrl, true);
