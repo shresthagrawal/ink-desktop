@@ -14,7 +14,7 @@ export default function forkBackend() {
     workerProcess = fork(__filename, ['--backend']);
     workerProcess.on('message', handleReady);
     workerProcess.on('exit', code => {
-      if (code !== 0) {
+      if (code !== 0 && code !== null) {
         throw new Error(
           `Backend thread unexpectedly exited with code ${code}.`
         );
