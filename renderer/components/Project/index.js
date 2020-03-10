@@ -161,8 +161,8 @@ function Project({ id, projects, user }) {
 
   // state is of the following structure:
   // state = { new: Array(), modified: Array(), deleted: Array() }
-  const { status, graph, delta, reloadProjectState } = useProjectState(
-    project.id
+  const { graph, diff, reloadProjectState } = useProjectState(
+    project ? project.id : null
   );
 
   const {
@@ -248,12 +248,13 @@ function Project({ id, projects, user }) {
     await reloadProjectState();
   });
 
-  useBackendSubscription('project-changed', async ({ projectId }) => {
-    if (projectId !== id) {
-      return;
-    }
-    await reloadProjectState();
-  });
+  //TODO: This is just a hack solution a better way must be there 
+  let changedFiles = [];
+  if (diff && diff.new && diff.modified && diff.deleted) {
+    changedFiles = changedFiles.concat(diff.new);
+    changedFiles = changedFiles.concat(diff.modified);
+    changedFiles = changedFiles.concat(diff.deleted);
+  }
 
   return (
     <>
@@ -277,9 +278,9 @@ function Project({ id, projects, user }) {
                 )}
               />
               <LocalChangesList>
-                {delta && delta.tracks ? (
+                {changedFiles && changedFiles.length > 0? (
                   <>
-                    {delta.tracks.map((trackName, index) => (
+                    {changedFiles.map((trackName, index) => (
                       <React.Fragment key={`new-${index}`}>
                         {index === 0 ? (
                           <Space margin="0 30px">
@@ -291,7 +292,7 @@ function Project({ id, projects, user }) {
                             <FlexContainer flow="row" alignItems="center">
                               <LocalChangeVerticalBranch
                                 height={
-                                  index < delta.tracks.length - 1
+                                  index < changedFiles.length - 1
                                     ? '40px'
                                     : '21px'
                                 }
@@ -328,7 +329,8 @@ function Project({ id, projects, user }) {
                         <BootstrapButton
                           size="sm"
                           disabled={
-                            !(delta && delta.tracks && delta.tracks.length > 0)
+                            (!diff || !diff.deleted || !diff.modified || !diff.new || 
+                            (diff.deleted.length == 0 && diff.modified.length == 0 && diff.new.length == 0))
                           }
                           type="submit"
                         >

@@ -3,9 +3,8 @@ import {request} from '../lib/backend';
 
 export default function useProjectState(projectId, interval = null) {
   const [state, setState] = useState({
-    status: {},
     graph: [],
-    delta: {},
+    diff: {},
   });
 
   const getState = useCallback(async () => {
