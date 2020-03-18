@@ -41,6 +41,7 @@ import FlexContainer from '../FlexContainer';
 import useBackendRequest from '../../effects/useBackendRequest';
 import { fadeIn } from '../../layout/animations';
 import ProjectInvite from './Invite';
+import useBackendSubscription from '../../effects/useBackendSubscription';
 
 const TallRow = styled(Row)`
   flex-grow: 1;
@@ -137,9 +138,18 @@ const LocalChangeVerticalBranch = styled.div`
   flex-shrink: 0;
 `;
 
-export default function Project({ id }) {
+export default function ProjectWrapper({ id }) {
   const { projects } = useProjects();
   const { user } = useUser();
+
+  if (!projects || !user) {
+    return null;
+  } else {
+    return <Project {...{ id, projects, user }} />;
+  }
+}
+
+function Project({ id, projects, user }) {
   const [canOpenProject] = useBackendRequest('can-open-project');
   const [commitSigned, setCommitSigned] = useTemporaryState(false, 5000);
 
@@ -149,7 +159,7 @@ export default function Project({ id }) {
   // state is of the following structure:
   // state = { new: Array(), modified: Array(), deleted: Array() }
   const { status, graph, delta, reloadProjectState } = useProjectState(
-    project ? project.id : null
+    project.id
   );
 
   const {
@@ -206,6 +216,13 @@ export default function Project({ id }) {
 
   const handleRefreshProject = useCallback(async event => {
     event.preventDefault();
+    await reloadProjectState();
+  });
+
+  useBackendSubscription('project-changed', async ({ projectId }) => {
+    if (projectId !== id) {
+      return;
+    }
     await reloadProjectState();
   });
 

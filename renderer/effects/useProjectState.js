@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import requestFromWorker from '../lib/requestFromWorker';
 
 export default function useProjectState(projectId, interval = null) {
@@ -8,20 +8,16 @@ export default function useProjectState(projectId, interval = null) {
     delta: {},
   });
 
-  const getState = async () => {
+  const getState = useCallback(async () => {
     try {
       const res = await requestFromWorker('get-project-state', projectId);
       setState(res);
     } catch (err) {
       console.error('Bad Error:', err);
     }
-  };
+  }, [projectId]);
 
   useEffect(() => {
-    if (!projectId) {
-      return;
-    }
-
     if (interval !== null) {
       const id = setInterval(getState, interval);
       return () => clearInterval(id);
@@ -32,6 +28,6 @@ export default function useProjectState(projectId, interval = null) {
 
   return {
     ...state,
-    reloadProjectState: getState,
+    reloadProjectState: () => getState(),
   };
 }
