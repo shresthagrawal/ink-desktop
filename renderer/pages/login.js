@@ -12,7 +12,7 @@ import Text from '../components/Text';
 import Position from '../components/Position';
 import useInput from '../effects/useInput';
 import requestFromWorker from '../lib/requestFromWorker';
-import bg from './bg.jpeg';
+import bg from '../layout/images/mesh.jpeg';
 
 const Login = ({ router }) => {
   const { user, setUser } = useUser();

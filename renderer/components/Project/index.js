@@ -36,7 +36,7 @@ import Size from '../Size';
 import { Button } from '../form';
 import SuccessLabel from '../SuccessLabel';
 
-import bg from '../../pages/bg.jpeg';
+import bg from '../../layout/images/mesh.jpeg';
 import FlexContainer from '../FlexContainer';
 import useBackendRequest from '../../effects/useBackendRequest';
 import { fadeIn } from '../../layout/animations';
