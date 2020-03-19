@@ -31,6 +31,17 @@ async function sendRequest(workerProcess, event, data) {
   });
 }
 
+function delegateWorkerPush(workerProcess, handler) {
+  const handlePush = ({ pushEvent }) => {
+    if (!pushEvent || !pushEvent.event) {
+      return;
+    }
+    handler(pushEvent.event, pushEvent.data);
+  };
+  workerProcess.on('message', handlePush);
+  return () => workerProcess.removeListener('message', handlePush);
+}
+
 async function handleAppReady(workerProcess) {
   ipc.answerRenderer(
     'to-worker',
@@ -43,6 +54,10 @@ async function handleAppReady(workerProcess) {
     minWidth: 1000,
     minHeight: 600,
   });
+
+  delegateWorkerPush(workerProcess, (event, data) =>
+    ipc.callRenderer(mainWindow, 'to-renderer', { event, data })
+  );
 
   if (!isProd) {
     const port = process.argv[2];

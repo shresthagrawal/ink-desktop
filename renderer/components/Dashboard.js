@@ -16,7 +16,7 @@ import requestFromWorker from '../lib/requestFromWorker';
 import { useRouter } from 'next/router';
 import Spinner from './Spinner';
 import useTimeout from '../effects/useTimeout';
-import bg from '../pages/bg.jpeg';
+import bg from '../layout/images/mesh.jpeg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faTimes,
