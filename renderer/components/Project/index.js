@@ -248,6 +248,13 @@ function Project({ id, projects, user }) {
     await reloadProjectState();
   });
 
+  useBackendSubscription('project-changed', async ({ projectId }) => {
+    if (projectId !== id) {
+      return;
+    }
+    await reloadProjectState();
+  });
+
   //TODO: This is just a hack solution a better way must be there 
   let changedFiles = [];
   if (diff && diff.new && diff.modified && diff.deleted) {
