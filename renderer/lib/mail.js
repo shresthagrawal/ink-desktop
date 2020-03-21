@@ -24,8 +24,8 @@ export async function inviteCollaborators(
 
   const body = `${user.email} has invited you to a new session on ununu for their project “${projectName}”.
 
-Click <a href="https://ununu.io/redirect.html?url=${remoteUrl}">here</a> or open the following URL in your browser to start collaborating:
-https://ununu.io/redirect.html?url=${remoteUrl}
+Click <a href="https://ununu-p2p.github.io/website/redirect.html?url=${remoteUrl}">here</a> or open the following URL in your browser to start collaborating:
+https://ununu-p2p.github.io/website/redirect.html?url=${remoteUrl}
 
 Their message:
 ${message}`.replace(/\n/g, '<br>');
