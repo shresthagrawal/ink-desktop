@@ -1,7 +1,7 @@
 import { app } from 'electron';
 import serve from 'electron-serve';
 import { ipcMain as ipc } from 'electron-better-ipc';
-import uuid from 'uuid/v1';
+import {v4 as uuid} from 'uuid';
 import url from 'url';
 import { createWindow, exitOnChange } from './helpers';
 import forkBackend from './helpers/fork-backend';
