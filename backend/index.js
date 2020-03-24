@@ -1,9 +1,12 @@
+import dotenv from 'dotenv';
 import createDebug from 'debug';
+import { handleRequest } from './handlers';
 import * as projectStore from '../lib/store/project-store';
 import * as userStore from '../lib/store/user-store';
-import { handleRequest } from '../backend/handlers';
 import { setConfig } from '../lib/config';
 import { ParserManager } from '../lib/parser';
+
+dotenv.config();
 
 export function initBackend() {
   createDebug.enable('backend*');
@@ -41,3 +44,5 @@ export function initBackend() {
     ParserManager.destroy();
   });
 }
+
+initBackend();
