@@ -8,7 +8,6 @@ import {
   backgroundPanel,
   inputBackground
 } from './colors';
-import '@ibm/plex/css/ibm-plex.css';
 
 const inkTheme = makeTheme({
   '$font-family-sans-serif:':
