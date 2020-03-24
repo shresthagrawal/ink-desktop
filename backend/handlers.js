@@ -6,7 +6,7 @@ import {
   getProjectState,
   cloneProject,
 } from '../lib/project';
-import { gitPush, gitPull, getRemote } from '../lib/git/utils';
+import { push, pull, getRemote } from '../lib/git/utils';
 import { ParserManager } from '../lib/parser';
 import { getById } from '../lib/store/project-store';
 import { getAbletonPath, openProject } from '../lib/daw';
@@ -45,11 +45,11 @@ registerHandler('commit-project', async ({ projectId, commitMessage }) => {
 });
 registerHandler('push-project', async ({ projectId }) => {
   const project = getById(projectId);
-  await gitPush(project.path, 'origin', 'master', 'master');
+  await push(project.path, 'origin', 'master', 'master');
 });
 registerHandler('pull-project', async ({ projectId }) => {
   const project = getById(projectId);
-  await gitPull(project.path, 'origin', 'master', 'master');
+  await pull(project.path, 'origin', 'master', 'master');
   await ParserManager.resetInstance(projectId);
 });
 registerHandler(
