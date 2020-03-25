@@ -11,14 +11,17 @@ dotenv.config();
 export function initBackend() {
   createDebug.enable('backend*');
   const debug = createDebug('backend');
+  const error = createDebug('backend:error');
   debug('Backend worker initializing');
 
-  const processMessages = () =>
+  const processRequests = () =>
     process.on('message', async ({ id, event, data }) => {
-      process.send({
-        id,
-        response: await handleRequest(event, data),
-      });
+      try {
+        process.send({ id, response: await handleRequest(event, data) });
+      } catch (err) {
+        error(`Error while handling request \`${event}\`:`, err);
+        process.send({ id, error: err });
+      }
     });
 
   const handleInit = ({ event, dataDir }) => {
@@ -31,7 +34,7 @@ export function initBackend() {
       projectStore.init();
       userStore.init();
 
-      processMessages();
+      processRequests();
       process.send('ready');
     } else {
       console.error('Invalid message received, expected `init` event.');

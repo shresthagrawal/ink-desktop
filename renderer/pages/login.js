@@ -11,7 +11,7 @@ import Size from '../components/Size';
 import Text from '../components/Text';
 import Position from '../components/Position';
 import useInput from '../effects/useInput';
-import requestFromWorker from '../lib/requestFromWorker';
+import {request} from '../lib/backend';
 import bg from '../layout/images/mesh.jpeg';
 
 const Login = ({ router }) => {
@@ -34,7 +34,7 @@ const Login = ({ router }) => {
       }
 
       // TODO call API once platform in place
-      const user = await requestFromWorker('set-user', { email, password });
+      const user = await request('set-user', { email, password });
       setUser(user);
 
       router.push('/home');

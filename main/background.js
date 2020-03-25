@@ -23,10 +23,10 @@ let mainWindow, workerProcess;
 async function sendRequest(workerProcess, event, data) {
   const requestId = uuid();
   return new Promise((resolve) => {
-    const handleResponse = ({ id, response }) => {
+    const handleResponse = ({ id, response, error }) => {
       if (id === requestId) {
         workerProcess.removeListener('message', handleResponse);
-        resolve(response);
+        resolve({ response, error });
       }
     };
     workerProcess.on('message', handleResponse);

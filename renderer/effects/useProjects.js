@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import requestFromWorker from '../lib/requestFromWorker';
+import {request} from '../lib/backend';
 
 export default function useProjects() {
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
     async function fetchProjects() {
-      const projects = await requestFromWorker('fetch-projects');
+      const projects = await request('fetch-projects');
       setProjects(projects);
     }
 

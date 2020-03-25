@@ -2,8 +2,11 @@ import React from 'react';
 import App from 'next/app';
 import { useRouter } from 'next/router';
 import useBackendSubscription from '../effects/useBackendSubscription';
+import createDebug from 'debug';
 
 import 'typeface-inter';
+
+createDebug.enable('frontend*');
 
 function OpenProjectContainer() {
   if (typeof window === 'undefined') {

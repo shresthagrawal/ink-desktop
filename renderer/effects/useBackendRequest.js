@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
-import requestFromWorker from '../lib/requestFromWorker';
+import { request } from '../lib/backend';
+import createDebug from 'debug';
+
+const error = createDebug('frontend:error');
 
 export default function useBackendRequest(type, payload) {
   const [data, setData] = useState(null);
@@ -10,10 +13,10 @@ export default function useBackendRequest(type, payload) {
       setLoading(true);
 
       try {
-        setData(await requestFromWorker(type, payload))
+        setData(await request(type, payload));
         setLoading(false);
-      } catch (e) {
-        console.log(e);
+      } catch (err) {
+        error(err);
       }
     }
 
