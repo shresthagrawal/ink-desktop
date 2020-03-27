@@ -35,6 +35,7 @@ import Text from '../Text';
 import Size from '../Size';
 import { Button } from '../form';
 import SuccessLabel from '../SuccessLabel';
+import SyncStatus from '../SyncStatus';
 
 import bg from '../../layout/images/mesh.jpeg';
 import FlexContainer from '../FlexContainer';
@@ -152,6 +153,7 @@ export default function ProjectWrapper({ id }) {
 function Project({ id, projects, user }) {
   const [canOpenProject] = useBackendRequest('can-open-project');
   const [synchronizing, setSynchronizing] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [commitSigned, setCommitSigned] = useTemporaryState(false, 5000);
 
   const commitSignedTransitions = useFade(commitSigned);
@@ -198,9 +200,15 @@ function Project({ id, projects, user }) {
       }
 
       setSynchronizing(true);
-      await request('push-project', {
-        projectId: project.id,
-      });
+      await request(
+        'push-project',
+        {
+          projectId: project.id,
+        },
+        {
+          onProgress: (progress) => setProgress(progress),
+        }
+      );
       setSynchronizing(false);
     },
     [project, synchronizing]
@@ -215,9 +223,15 @@ function Project({ id, projects, user }) {
       }
 
       setSynchronizing(true);
-      await request('pull-project', {
-        projectId: project.id,
-      });
+      await request(
+        'pull-project',
+        {
+          projectId: project.id,
+        },
+        {
+          onProgress: (progress) => setProgress(progress),
+        }
+      );
       setSynchronizing(false);
       await reloadProjectState();
     },
@@ -375,6 +389,8 @@ function Project({ id, projects, user }) {
           </TallRow>
         </Space>
       ) : null}
+
+      {synchronizing && <SyncStatus progress={progress} />}
     </>
   );
 }
