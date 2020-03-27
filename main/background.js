@@ -20,37 +20,45 @@ if (isProd) {
 
 let mainWindow, workerProcess;
 
-async function sendRequest(workerProcess, event, data) {
-  const requestId = uuid();
+async function sendRequest(
+  workerProcess,
+  { id: requestId, event, data, ...opts }
+) {
+  if (!requestId || !event) {
+    throw new Error('Malformed event received');
+  }
+
   return new Promise((resolve) => {
-    const handleResponse = ({ id, response, error }) => {
-      if (id === requestId) {
+    const handleResponse = ({ id: responseId, response, error }) => {
+      if (requestId === responseId) {
         workerProcess.removeListener('message', handleResponse);
-        resolve({ response, error });
+        resolve({ id: responseId, response, error });
       }
     };
     workerProcess.on('message', handleResponse);
-    workerProcess.send({ id: requestId, event, data });
+    workerProcess.send({ id: requestId, event, data, ...opts });
   });
 }
 
-function delegateWorkerPush(workerProcess, handler) {
+function delegateRequestEvents(workerProcess, eventName) {
+  ipc.answerRenderer(
+    eventName,
+    async (event) => await sendRequest(workerProcess, event)
+  );
+}
+
+function delegatePushEvents(workerProcess, rendererWindow, eventName) {
   const handlePush = ({ pushEvent }) => {
     if (!pushEvent || !pushEvent.event) {
       return;
     }
-    handler(pushEvent.event, pushEvent.data);
+    ipc.callRenderer(rendererWindow, eventName, pushEvent);
   };
   workerProcess.on('message', handlePush);
   return () => workerProcess.removeListener('message', handlePush);
 }
 
 async function handleAppReady(workerProcess) {
-  ipc.answerRenderer(
-    'to-worker',
-    async ({ event, data }) => await sendRequest(workerProcess, event, data)
-  );
-
   mainWindow = createWindow('main', {
     width: 1000,
     height: 600,
@@ -58,9 +66,8 @@ async function handleAppReady(workerProcess) {
     minHeight: 600,
   });
 
-  delegateWorkerPush(workerProcess, (event, data) =>
-    ipc.callRenderer(mainWindow, 'to-renderer', { event, data })
-  );
+  delegateRequestEvents(workerProcess, 'to-worker');
+  delegatePushEvents(workerProcess, mainWindow, 'to-renderer');
 
   if (!isProd) {
     const port = process.argv[2];
