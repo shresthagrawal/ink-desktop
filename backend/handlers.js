@@ -15,9 +15,9 @@ const handlers = new Map();
 function registerHandler(event, handler) {
   handlers.set(event, handler);
 }
-export async function handleRequest(event, data) {
+export async function handleRequest(event, data, onProgress) {
   if (handlers.has(event) && typeof handlers.get(event) === 'function') {
-    return handlers.get(event)(data);
+    return handlers.get(event)(data, onProgress);
   }
   // FIXME: what if there is no handler registered?
 }
@@ -29,33 +29,35 @@ registerHandler('set-user', ({ email }) => {
 });
 
 registerHandler('fetch-projects', () => projectStore.list());
-registerHandler('delete-project', projectId => projectStore.remove(projectId));
+registerHandler('delete-project', (projectId) =>
+  projectStore.remove(projectId)
+);
 registerHandler('reset-projects', () => projectStore.reset());
 registerHandler(
   'add-project',
-  async projectPath => await initProject(projectPath)
+  async (projectPath) => await initProject(projectPath)
 );
 registerHandler(
   'get-project-state',
-  async projectId => await getProjectState(projectId)
+  async (projectId) => await getProjectState(projectId)
 );
 registerHandler('commit-project', async ({ projectId, commitMessage }) => {
   const user = userStore.get();
   return await commitProject(projectId, commitMessage, user.email);
 });
-registerHandler('push-project', async ({ projectId }) => {
+registerHandler('push-project', async ({ projectId }, onProgress) => {
   const project = getById(projectId);
-  await push(project.path, 'origin', 'master', 'master');
+  await push(project.path, 'origin', 'master', 'master', onProgress);
 });
-registerHandler('pull-project', async ({ projectId }) => {
+registerHandler('pull-project', async ({ projectId }, onProgress) => {
   const project = getById(projectId);
-  await pull(project.path, 'origin', 'master', 'master');
+  await pull(project.path, 'origin', 'master', 'master', onProgress);
   await ParserManager.resetInstance(projectId);
 });
 registerHandler(
   'clone-project',
-  async ({ remoteUrl, projectFolder }) =>
-    await cloneProject(remoteUrl, projectFolder)
+  async ({ remoteUrl, projectFolder }, onProgress) =>
+    await cloneProject(remoteUrl, projectFolder, onProgress)
 );
 registerHandler(
   'open-project',

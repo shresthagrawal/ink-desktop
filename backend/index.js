@@ -5,6 +5,7 @@ import * as projectStore from '../lib/store/project-store';
 import * as userStore from '../lib/store/user-store';
 import { setConfig } from '../lib/config';
 import { ParserManager } from '../lib/parser';
+import pushEvent from './pushEvent';
 
 dotenv.config();
 
@@ -15,9 +16,13 @@ export function initBackend() {
   debug('Backend worker initializing');
 
   const processRequests = () =>
-    process.on('message', async ({ id, event, data }) => {
+    process.on('message', async ({ id, event, data, progress }) => {
       try {
-        process.send({ id, response: await handleRequest(event, data) });
+        const handleProgress = progress
+          ? (progress) => pushEvent(`progress-${id}`, progress)
+          : undefined;
+
+        process.send({ id, response: await handleRequest(event, data, handleProgress) });
       } catch (err) {
         error(`Error while handling request \`${event}\`:`, err);
         process.send({ id, error: err });
