@@ -28,8 +28,8 @@ import {
 import HistoryIcon from '../HistoryIcon';
 import useTemporaryState from '../../effects/useTemporaryState';
 import useFade from '../../effects/useFade';
-import { initialMockCommits, trackEmoji } from '../../mocks';
 import { request } from '../../lib/backend';
+import { trackEmoji } from '../../mocks';
 import Space from '../Space';
 import Text from '../Text';
 import Size from '../Size';
@@ -390,7 +390,7 @@ function Project({ id, projects, user }) {
                 </Size>
               </Row>
               <CommitGraphContainer className="mt-3">
-                <CommitGraph graph={initialMockCommits.concat(graph)} />
+                <CommitGraph graph={graph} />
               </CommitGraphContainer>
             </CenterPanel>
 
