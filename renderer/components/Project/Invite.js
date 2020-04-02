@@ -12,7 +12,7 @@ import Input from '../Input';
 import Textarea from '../Textarea';
 import Panel from '../Panel';
 import useFade from '../../effects/useFade';
-import requestFromWorker from '../../lib/requestFromWorker';
+import {request} from '../../lib/backend';
 import { inviteCollaborators } from '../../lib/mail';
 import useTemporaryState from '../../effects/useTemporaryState';
 import useInput from '../../effects/useInput';
@@ -46,7 +46,7 @@ export default function ProjectInvite({ project, user }) {
   const handleInvite = useCallback(async event => {
     event.preventDefault();
 
-    const remoteUrl = await requestFromWorker('get-remote', {
+    const remoteUrl = await request('get-remote', {
       projectId: project.id,
     });
     const recipients = invitationRecipient

@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import requestFromWorker from '../lib/requestFromWorker';
+import {request} from '../lib/backend';
 
 export default function useProjectState(projectId, interval = null) {
   const [state, setState] = useState({
@@ -10,7 +10,7 @@ export default function useProjectState(projectId, interval = null) {
 
   const getState = useCallback(async () => {
     try {
-      const res = await requestFromWorker('get-project-state', projectId);
+      const res = await request('get-project-state', projectId);
       setState(res);
     } catch (err) {
       console.error('Bad Error:', err);

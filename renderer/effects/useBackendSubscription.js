@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import addBackendSubscription from '../lib/addBackendSubscription';
+import { subscribe } from '../lib/backend';
 
 export default function useBackendSubscription(event, handler) {
-  useEffect(() => addBackendSubscription(event, handler), []);
+  useEffect(() => subscribe(event, handler), []);
 }

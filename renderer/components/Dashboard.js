@@ -12,7 +12,7 @@ import Space from './Space';
 import Size from './Size';
 import FlexContainer from './FlexContainer';
 import Panel from './Panel';
-import requestFromWorker from '../lib/requestFromWorker';
+import {request} from '../lib/backend';
 import { useRouter } from 'next/router';
 import Spinner from './Spinner';
 import useTimeout from '../effects/useTimeout';
@@ -81,7 +81,7 @@ const Dashboard = ({ openTab }) => {
     }
 
     const projectPath = filePaths[0];
-    const projects = await requestFromWorker('add-project', projectPath);
+    const projects = await request('add-project', projectPath);
     setProjects(projects);
   }, []);
 
@@ -90,7 +90,7 @@ const Dashboard = ({ openTab }) => {
   });
 
   const deleteProject = projectPath => async event => {
-    const updatedProjectsList = await requestFromWorker(
+    const updatedProjectsList = await request(
       'delete-project',
       projectPath
     );
@@ -130,7 +130,7 @@ const Dashboard = ({ openTab }) => {
     (async () => {
       setProcessing(true);
 
-      const projects = await requestFromWorker('clone-project', {
+      const projects = await request('clone-project', {
         remoteUrl: projectUrl,
         projectFolder: projectPath,
       });

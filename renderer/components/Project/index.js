@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import {
   Col,
@@ -29,12 +29,13 @@ import HistoryIcon from '../HistoryIcon';
 import useTemporaryState from '../../effects/useTemporaryState';
 import useFade from '../../effects/useFade';
 import { initialMockCommits, trackEmoji } from '../../mocks';
-import requestFromWorker from '../../lib/requestFromWorker';
+import { request } from '../../lib/backend';
 import Space from '../Space';
 import Text from '../Text';
 import Size from '../Size';
 import { Button } from '../form';
 import SuccessLabel from '../SuccessLabel';
+import SyncStatus from '../SyncStatus';
 
 import bg from '../../layout/images/mesh.jpeg';
 import FlexContainer from '../FlexContainer';
@@ -72,7 +73,7 @@ const MoreInfo = styled.em`
 const TrackLine = styled(Col).attrs({
   md: 12,
 })`
-  margin-top: ${props => (props.offsetTop || 0) + 10}px;
+  margin-top: ${(props) => (props.offsetTop || 0) + 10}px;
 `;
 
 const NoNewTracksLine = styled(TrackLine)`
@@ -132,7 +133,7 @@ const LocalChangeHorizontalBranch = styled.div`
 
 const LocalChangeVerticalBranch = styled.div`
   width: 2px;
-  height: ${props => props.height};
+  height: ${(props) => props.height};
   background: #929292;
   align-self: flex-start;
   flex-shrink: 0;
@@ -151,10 +152,12 @@ export default function ProjectWrapper({ id }) {
 
 function Project({ id, projects, user }) {
   const [canOpenProject] = useBackendRequest('can-open-project');
+  const [synchronizing, setSynchronizing] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [commitSigned, setCommitSigned] = useTemporaryState(false, 5000);
 
   const commitSignedTransitions = useFade(commitSigned);
-  const project = projects.find(project => project.id === id);
+  const project = projects.find((project) => project.id === id);
 
   // state is of the following structure:
   // state = { new: Array(), modified: Array(), deleted: Array() }
@@ -169,14 +172,14 @@ function Project({ id, projects, user }) {
   } = useInput('');
 
   const handleSignCommit = useCallback(
-    async event => {
+    async (event) => {
       event.preventDefault();
 
       const form = event.currentTarget;
       if (form.checkValidity() === false) {
         event.stopPropagation();
       }
-      await requestFromWorker('commit-project', {
+      await request('commit-project', {
         projectId: project.id,
         commitMessage,
       });
@@ -189,32 +192,58 @@ function Project({ id, projects, user }) {
   );
 
   const handlePush = useCallback(
-    async event => {
+    async (event) => {
       event.preventDefault();
-      await requestFromWorker('push-project', {
-        projectId: project.id,
-      });
+
+      if (synchronizing) {
+        return;
+      }
+
+      setSynchronizing(true);
+      await request(
+        'push-project',
+        {
+          projectId: project.id,
+        },
+        {
+          onProgress: (progress) => setProgress(progress),
+        }
+      );
+      setSynchronizing(false);
     },
-    [project]
+    [project, synchronizing]
   );
 
   const handlePull = useCallback(
-    async event => {
+    async (event) => {
       event.preventDefault();
-      await requestFromWorker('pull-project', {
-        projectId: project.id,
-      });
+
+      if (synchronizing) {
+        return;
+      }
+
+      setSynchronizing(true);
+      await request(
+        'pull-project',
+        {
+          projectId: project.id,
+        },
+        {
+          onProgress: (progress) => setProgress(progress),
+        }
+      );
+      setSynchronizing(false);
       await reloadProjectState();
     },
-    [project]
+    [project, synchronizing]
   );
 
-  const handleOpenProject = useCallback(async event => {
+  const handleOpenProject = useCallback(async (event) => {
     event.preventDefault();
-    await requestFromWorker('open-project', { projectId: project.id });
+    await request('open-project', { projectId: project.id });
   });
 
-  const handleRefreshProject = useCallback(async event => {
+  const handleRefreshProject = useCallback(async (event) => {
     event.preventDefault();
     await reloadProjectState();
   });
@@ -311,6 +340,7 @@ function Project({ id, projects, user }) {
                           size="sm"
                           onClick={handlePush}
                           color="secondary"
+                          disabled={synchronizing}
                         >
                           Push
                         </BootstrapButton>
@@ -319,6 +349,7 @@ function Project({ id, projects, user }) {
                         size="sm"
                         onClick={handlePull}
                         color="info"
+                        disabled={synchronizing}
                       >
                         Pull
                       </BootstrapButton>
@@ -358,6 +389,8 @@ function Project({ id, projects, user }) {
           </TallRow>
         </Space>
       ) : null}
+
+      {synchronizing && <SyncStatus progress={progress} />}
     </>
   );
 }
