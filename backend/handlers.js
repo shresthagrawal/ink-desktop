@@ -52,7 +52,6 @@ registerHandler('push-project', async ({ projectId }, onProgress) => {
 registerHandler('pull-project', async ({ projectId }, onProgress) => {
   const project = getById(projectId);
   await pull(project.path, 'origin', 'master', 'master', onProgress);
-  await ParserManager.resetInstance(projectId);
 });
 registerHandler(
   'clone-project',
