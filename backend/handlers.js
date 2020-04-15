@@ -60,12 +60,10 @@ registerHandler(
 );
 registerHandler(
   'open-project',
-  // TODO: Fix this for the user to choose the proect to open.
-  async ({ projectId }) => await openProject(projectId)
+  async ({ projectId }) => await openProject(projectId, '')
 );
-// TODO: Temporarily disabled until the above todo is fixed 
-// registerHandler('can-open-project', () => getAbletonPath() !== null);
-registerHandler('can-open-project', () => false);
+
+registerHandler('can-open-project', () => getAbletonPath() !== null);
 
 registerHandler('get-remote', async ({ projectId }) => {
   let project = getById(projectId);
