@@ -235,8 +235,7 @@ const Dashboard = ({ openTab }) => {
                         icon={faFolderPlus}
                       />
                     </Space>
-                    <Text size="18px">Click or drag folder to this area</Text>
-                    <Text size="18px">to add it to your projects</Text>
+                    <Text size="18px">Click here to add project folder</Text>
                   </UploadProject>
                 </Size>
                 <Space padding="30px 0 0">
