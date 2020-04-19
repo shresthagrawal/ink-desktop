@@ -3,8 +3,8 @@ import { patchFs } from 'fs-monkey';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
-import { setConfig } from '../../lib/config';
-import { Store, validateStoreVersion } from '../../lib/store/store';
+import { setConfig } from '../lib/config';
+import { Store, validateStoreVersion } from '../lib/store/store';
 
 chai.use(chaiAsPromised);
 chai.should();

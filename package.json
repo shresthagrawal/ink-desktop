@@ -10,10 +10,10 @@
     "build:all": "nextron build --all",
     "lint": "eslint",
     "install-app-deps": "electron-builder install-app-deps",
-    "test": "mocha -r esm main/test/**/*.js",
-    "testwith": "mocha -r esm main/test/**/*.js --grep",
-    "coverage": "nyc mocha -r esm main/test/**/*.js",
-    "report-coverage": "nyc --reporter=text-lcov mocha -r esm main/test/**/*.js > coverage.lcov && codecov"
+    "test": "mocha -r esm test/**/*.js",
+    "testwith": "mocha -r esm test/**/*.js --grep",
+    "coverage": "nyc mocha -r esm test/**/*.js",
+    "report-coverage": "nyc --reporter=text-lcov mocha -r esm test/**/*.js > coverage.lcov && codecov"
   },
   "dependencies": {
     "@bootstrap-styled/provider": "^1.5.3",
