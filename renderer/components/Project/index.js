@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import styled from 'styled-components';
 import {
   Col,
@@ -255,13 +255,23 @@ function Project({ id, projects, user }) {
     await reloadProjectState();
   });
 
-  //TODO: This is just a hack solution a better way must be there 
-  let changedFiles = [];
-  if (diff && diff.new && diff.modified && diff.deleted) {
-    changedFiles = changedFiles.concat(diff.new);
-    changedFiles = changedFiles.concat(diff.modified);
-    changedFiles = changedFiles.concat(diff.deleted);
-  }
+  const didNotChange = useMemo(
+    () =>
+      !diff ||
+      !diff.deleted ||
+      !diff.modified ||
+      !diff.new ||
+      (diff.deleted.length === 0 &&
+        diff.modified.length === 0 &&
+        diff.new.length === 0),
+    [diff]
+  );
+
+  const changedFiles = useMemo(
+    () =>
+      didNotChange ? [] : [...diff.new, ...diff.modified, ...diff.deleted],
+    [diff]
+  );
 
   return (
     <>
@@ -285,7 +295,7 @@ function Project({ id, projects, user }) {
                 )}
               />
               <LocalChangesList>
-                {changedFiles && changedFiles.length > 0? (
+                {changedFiles && changedFiles.length > 0 ? (
                   <>
                     {changedFiles.map((trackName, index) => (
                       <React.Fragment key={`new-${index}`}>
@@ -335,10 +345,7 @@ function Project({ id, projects, user }) {
                       <Space margin="0 10px 0 0">
                         <BootstrapButton
                           size="sm"
-                          disabled={
-                            (!diff || !diff.deleted || !diff.modified || !diff.new || 
-                            (diff.deleted.length == 0 && diff.modified.length == 0 && diff.new.length == 0))
-                          }
+                          disabled={didNotChange}
                           type="submit"
                         >
                           Sign
