@@ -19,6 +19,7 @@ if (isProd) {
 }
 
 let mainWindow, workerProcess;
+let openImportProject;
 
 async function sendRequest(
   workerProcess,
@@ -76,6 +77,7 @@ async function handleAppReady(workerProcess) {
   } else {
     await mainWindow.loadURL(`app://./home.html`);
   }
+  if (openImportProject) openImportProject(mainWindow);
 }
 
 export async function main() {
@@ -101,17 +103,20 @@ app.on('will-quit', () => {
 });
 
 app.on('open-url', function (event, requestUrl) {
-  let parsedUrl = url.parse(requestUrl, true);
-  if (parsedUrl.protocol !== 'ink:' || !mainWindow) {
+  const parsedUrl = url.parse(requestUrl, true);
+  if (parsedUrl.protocol !== 'ink:') {
     return;
   }
 
-  ipc.callRenderer(mainWindow, 'to-renderer', {
-    event: 'import-project-from-external',
-    data: {
-      remoteUrl: parsedUrl.query.url,
-    },
-  });
+  const openImportProject = (rendererWindow) => {
+    ipc.callRenderer(rendererWindow, 'to-renderer', {
+      event: 'import-project-from-external',
+      data: {
+        remoteUrl: parsedUrl.query.url,
+      },
+    });
+  };
+  if (mainWindow) openImportProject(mainWindow);
 });
 
 main();
