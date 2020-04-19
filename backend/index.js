@@ -4,8 +4,8 @@ import { handleRequest } from './handlers';
 import * as projectStore from '../lib/store/project-store';
 import * as userStore from '../lib/store/user-store';
 import { setConfig } from '../lib/config';
-import { ParserManager } from '../lib/parser';
 import pushEvent from './pushEvent';
+import ProjectWatcher from '../lib/project-watcher';
 
 dotenv.config();
 
@@ -49,7 +49,7 @@ export function initBackend() {
   process.on('message', handleInit);
   process.on('exit', () => {
     debug('Background worker shutting down');
-    ParserManager.destroy();
+    ProjectWatcher.unwatchAll();
   });
 }
 

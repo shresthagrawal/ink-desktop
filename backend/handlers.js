@@ -52,7 +52,6 @@ registerHandler('push-project', async ({ projectId }, onProgress) => {
 registerHandler('pull-project', async ({ projectId }, onProgress) => {
   const project = getById(projectId);
   await pull(project.path, 'origin', 'master', 'master', onProgress);
-  await ParserManager.resetInstance(projectId);
 });
 registerHandler(
   'clone-project',
@@ -61,8 +60,9 @@ registerHandler(
 );
 registerHandler(
   'open-project',
-  async ({ projectId }) => await openProject(projectId)
+  async ({ projectId }) => await openProject(projectId, '')
 );
+
 registerHandler('can-open-project', () => getAbletonPath() !== null);
 
 registerHandler('get-remote', async ({ projectId }) => {

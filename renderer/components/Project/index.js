@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import styled from 'styled-components';
 import {
   Col,
@@ -28,8 +28,8 @@ import {
 import HistoryIcon from '../HistoryIcon';
 import useTemporaryState from '../../effects/useTemporaryState';
 import useFade from '../../effects/useFade';
-import { initialMockCommits, trackEmoji } from '../../mocks';
 import { request } from '../../lib/backend';
+import { trackEmoji } from '../../mocks';
 import Space from '../Space';
 import Text from '../Text';
 import Size from '../Size';
@@ -161,8 +161,8 @@ function Project({ id, projects, user }) {
 
   // state is of the following structure:
   // state = { new: Array(), modified: Array(), deleted: Array() }
-  const { status, graph, delta, reloadProjectState } = useProjectState(
-    project.id
+  const { graph, diff, reloadProjectState } = useProjectState(
+    project ? project.id : null
   );
 
   const {
@@ -255,6 +255,24 @@ function Project({ id, projects, user }) {
     await reloadProjectState();
   });
 
+  const didNotChange = useMemo(
+    () =>
+      !diff ||
+      !diff.deleted ||
+      !diff.modified ||
+      !diff.new ||
+      (diff.deleted.length === 0 &&
+        diff.modified.length === 0 &&
+        diff.new.length === 0),
+    [diff]
+  );
+
+  const changedFiles = useMemo(
+    () =>
+      didNotChange ? [] : [...diff.new, ...diff.modified, ...diff.deleted],
+    [diff]
+  );
+
   return (
     <>
       {user ? <Header user={user} project={project} /> : null}
@@ -277,9 +295,9 @@ function Project({ id, projects, user }) {
                 )}
               />
               <LocalChangesList>
-                {delta && delta.tracks ? (
+                {changedFiles && changedFiles.length > 0 ? (
                   <>
-                    {delta.tracks.map((trackName, index) => (
+                    {changedFiles.map((trackName, index) => (
                       <React.Fragment key={`new-${index}`}>
                         {index === 0 ? (
                           <Space margin="0 30px">
@@ -291,7 +309,7 @@ function Project({ id, projects, user }) {
                             <FlexContainer flow="row" alignItems="center">
                               <LocalChangeVerticalBranch
                                 height={
-                                  index < delta.tracks.length - 1
+                                  index < changedFiles.length - 1
                                     ? '40px'
                                     : '21px'
                                 }
@@ -327,9 +345,7 @@ function Project({ id, projects, user }) {
                       <Space margin="0 10px 0 0">
                         <BootstrapButton
                           size="sm"
-                          disabled={
-                            !(delta && delta.tracks && delta.tracks.length > 0)
-                          }
+                          disabled={didNotChange}
                           type="submit"
                         >
                           Sign
@@ -381,7 +397,7 @@ function Project({ id, projects, user }) {
                 </Size>
               </Row>
               <CommitGraphContainer className="mt-3">
-                <CommitGraph graph={initialMockCommits.concat(graph)} />
+                <CommitGraph graph={graph} />
               </CommitGraphContainer>
             </CenterPanel>
 

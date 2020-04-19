@@ -16,22 +16,21 @@ const tmpDir = './main/test/tmp';
 const inkJson = {
   name: 'A',
   remoteUrl: '',
-  tracks: [],
 };
 
-describe('Init', function() {
-  describe('Init Ink File', function() {
-    before(async function() {
+describe('Init', function () {
+  describe('Init Ink File', function () {
+    before(async function () {
       // Create a copy of the sample files.
       // This is important as the parser modifies the origional file.
       copySync(resDir, tmpDir);
     });
-    it('Create Ink file when Path of the project is given', async function() {
+    it('Create Ink file when Path of the project is given', async function () {
       initInkFile('A', './main/test/tmp/project', '');
       let inkRaw = readFileSync('./main/test/tmp/project/ink.json');
       JSON.parse(inkRaw).should.eql(inkJson);
     });
-    after(function() {
+    after(function () {
       // Cleanup after test
       remove(tmpDir);
     });
