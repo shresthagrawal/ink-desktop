@@ -3,16 +3,16 @@ import chaiAsPromised from 'chai-as-promised';
 import { readFileSync } from 'fs';
 import path from 'path';
 import { copySync, remove } from 'fs-extra';
-import { initInkFile } from '../../lib/ink-file';
+import { initInkFile } from '../lib/ink-file';
 
 chai.use(chaiAsPromised);
 chai.should();
 const expect = chai.expect;
 
 // Test resource directory
-const resDir = './main/test/res';
+const resDir = path.join(__dirname, 'res');
 // Tmp directory created as an exact copy of the res directory before test
-const tmpDir = './main/test/tmp';
+const tmpDir = path.join(__dirname, 'tmp');
 const inkJson = {
   name: 'A',
   remoteUrl: '',
@@ -26,8 +26,8 @@ describe('Init', function () {
       copySync(resDir, tmpDir);
     });
     it('Create Ink file when Path of the project is given', async function () {
-      initInkFile('A', './main/test/tmp/project', '');
-      let inkRaw = readFileSync('./main/test/tmp/project/ink.json');
+      initInkFile('A', path.join(__dirname, 'tmp/project'), '');
+      let inkRaw = readFileSync(path.join(__dirname, 'tmp/project/ink.json'));
       JSON.parse(inkRaw).should.eql(inkJson);
     });
     after(function () {
