@@ -11,14 +11,15 @@ script:
 install: npm install && npm run install-app-deps
 before_deploy:
 - echo -e 'SENDGRID_TOKEN=$SENDGRID_TOKEN' >> .env
-- echo -e 'GITHUB_USER=$GITHUB_USER' >> .env
-- echo -e 'GITHUB_TOKEN=$GITHUB_TOKEN' >> .env
+- echo -e 'GITHUB_USER=$INK_GITHUB_USER' >> .env
+- echo -e 'GITHUB_TOKEN=$INK_GITHUB_TOKEN' >> .env
 - npm run-script build:all
 deploy:
   provider: releases
-  token: '$GITHUB_TOKEN'
   overwrite: true
   file_glob: true
+  api_key:
+    secure: ClzOQHjqjsq2Rtz4mJlV1fkBoT5JxvF9GOMTCpBb0WRLMqD8n0u5Q02LmEwmyJHKSjeT2BSJb0P+lQb//zQzG88pk6jz6wZXK7XnfOTXV30eNE63hurPJIcwICbSMTvgMs7OuH5vR7nNlzRItGV+xMOghrwhvIZ4HQRHNYfViHrsfFD/vipd/wR+ymrWa+GjsbxluieHd1xOHvDJKx/2H9AL0sZOl6/M/ap63BEjlvM3UBFDk9BUeU/nF/XsyhkLMgp0jGWKiWIv2dATTklZzy0f3kTJXiR5V2PqYR+opDVStYEWdckP4WEjbya89NRMhagctZrQoEv9Vr10OjwQXKGLvOr7vWzP43cbCIOxkEOCj095F9+y6SUhybNz1+C9tiQjDyUd2ELIHRsuwX9lm88MYe1PUWDjUvFnkZRA2rLYpvQbO5ERwC7nUWGfzGzzT0IRa3ci+qgUwtSJjIJ3wFc2Et/Him8o1VcguRrTB42tiY+s4niqKNBMyxChv/GwBtDRR6sA5LDr+Ensf1EAB78mHS3wD+DWsAqk4FaOrjj3RHS1EHkYeTpvym3NjhEFsl1WGRM92rKo0xe0onnsffpbhL07z0xL/0tmugjKfQH19kK+GXdHLvi+TBpB9M2XU4jzgleoZbgAYblCeW17RA84lxt4DT5eDjp3iLnmJyk=
   file: dist/ununu*
   skip_cleanup: true
   on:
