@@ -12,7 +12,7 @@ import Input from '../Input';
 import Textarea from '../Textarea';
 import Panel from '../Panel';
 import useFade from '../../effects/useFade';
-import {request} from '../../lib/backend';
+import { request } from '../../lib/backend';
 import { inviteCollaborators } from '../../lib/mail';
 import useTemporaryState from '../../effects/useTemporaryState';
 import useInput from '../../effects/useInput';
@@ -43,7 +43,7 @@ export default function ProjectInvite({ project, user }) {
     reset: resetInvitationMessage,
   } = useInput('');
 
-  const handleInvite = useCallback(async event => {
+  const handleInvite = useCallback(async (event) => {
     event.preventDefault();
 
     const remoteUrl = await request('get-remote', {
@@ -51,7 +51,7 @@ export default function ProjectInvite({ project, user }) {
     });
     const recipients = invitationRecipient
       .split(/[ ,]+/)
-      .map(recipient => recipient.trim());
+      .map((recipient) => recipient.trim());
 
     await inviteCollaborators(
       recipients,
@@ -74,15 +74,14 @@ export default function ProjectInvite({ project, user }) {
         </Space>
         <Space padding="0 20px">
           <div>
-            <Text size="22px" weight="500" align="center">
+            <Text
+              size="22px"
+              weight="500"
+              align="center"
+              style={{ marginBottom: 20 }}
+            >
               Share it!
             </Text>
-            <Space padding="4px 0 24px">
-              <Text size="18px" align="center" height="21px">
-                Sed do eiusmod tempor incididunt ut labore et dolore magna
-                aliqua.
-              </Text>
-            </Space>
             <FormGroup>
               <Input
                 required
