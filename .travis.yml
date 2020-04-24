@@ -5,12 +5,12 @@ node_js:
 - stable
 install: echo hello
 before_deploy:
-- echo -e RANDOM=$RANDOM >> test
+- echo -e RANDOM=$RANDOM >> idk.txt
 deploy:
   provider: releases
   api_key:
     secure: tf2plGh2MEVLj+DI+SMEJFQtxZWUsc+nWwA21TCtCzzluZzihj+UcvMjZEuVs+o9CgJ4asX2o4THrvz3mu4FoQZSsdCcLbFp5VDTZXL5vxki1uSwlcbr6FUSgibkM2cuutiEzR1qoexHdHqRJhZ9lLMd/I/yEw1VbXeFRMSk7uPNn7GHXhNjYf1OGQ7o/a5MjM02BeDLXbrhHGikRZ6wAicUsFKLv9TTtOTPNr9OPZwEako1KWNm1kleUGXRNn4yLEkpejkxl37Z8b74kd008Dwu5AlFzgBmko8AlG1jSnjCOPAWmyVADHSw1enxZUcCxDJmf1/zMKD48oHBt5/TdnVMHxe61zM7ByQgO7n0YnKuJrKgkyPLxQ7SEIeIhLHM7L8PBwVCuHeyqYvk7FcceeHieIdRrwyy2V4b9lZSOwDy5lMf8EB+bbMbW17Qm+8ukSxoY/6D2Cg7NquNyOux+zbt4bD/SgnsOF+TbgO5OqVGg/lx1XAXSHl8ZasjNQhPnp3ANsDK9KtuzldKJ7OiNGTNVSAdF5oo8NZan/7jqoPW5Cc1NTE3AQ6BTQTW0JUNdF7+T0vE5cTCLHlxQWk6dORGnE00SGwmZZEAJFmWlP226KlhTa+82S2Dn9/5VQL4TCh5GSOQsp3gHUmwIn0mgubtnxlmA2NsEVXt2geJE10=
-  file: test
+  file: idk.txt
   skip_cleanup: true
   on:
     tags: true
