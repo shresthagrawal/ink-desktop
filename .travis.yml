@@ -1,5 +1,8 @@
 os:
 - osx
+language: node_js
+node_js:
+- stable
 install: echo hello
 before_deploy:
 - echo -e 'RANDOM=$RANDOM' >> .env
