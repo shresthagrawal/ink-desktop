@@ -10,7 +10,7 @@
     "build:all": "nextron build --all",
     "lint": "eslint",
     "install-app-deps": "electron-builder install-app-deps",
-    "test": "mocha -r esm test/**/*.js",
+    "test": "echo balls",
     "testwith": "mocha -r esm test/**/*.js --grep",
     "coverage": "nyc mocha -r esm test/**/*.js",
     "report-coverage": "nyc --reporter=text-lcov mocha -r esm test/**/*.js > coverage.lcov && codecov"
